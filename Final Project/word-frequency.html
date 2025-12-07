@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Word Frequency · William Shakes Pear</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+  <link rel="stylesheet" href="https://use.typekit.net/nmx3jjw.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pagetransition.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "phoreuscherokee", serif;
+      font-weight: 400;
+      background: #f7f5f0;
+      color: #1f1f1f;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .back-link {
+      font-size: 0.85rem;
+      opacity: 0.75;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .back-link:hover {
+      opacity: 1;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.6rem);
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      max-width: 540px;
+    }
+
+    /* MODE TOGGLE */
+/* MODE TOGGLE – sliding pill */
+.mode-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #f1ebe0;
+  padding: 0.2rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+/* the sliding highlight behind the active mode */
+.mode-toggle::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  border-radius: 999px;
+  background: #fffdf8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease;
+}
+
+/* when compare mode is active, slide the pill to the right */
+.mode-toggle[data-mode="compare"]::before {
+  transform: translateX(100%);
+}
+
+/* mode buttons sit at each end & ride on top of the highlight */
+.mode-button {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  text-align: center;
+}
+
+/* active mode: stronger text, tiny lift */
+.mode-button.is-active {
+  opacity: 1;
+}
+
+
+    /* SHELLS */
+    .shell {
+      background: #fffdf8;
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem 1.4rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      margin-bottom: 2rem;
+    }
+
+    .shell.hidden {
+      display: none;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      align-items: center;
+    }
+
+    .label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      min-width: 70px;
+    }
+
+    select,
+    input[type="text"] {
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.18);
+      background: #fff;
+      font-size: 0.9rem;
+      padding: 0.7rem 0.85rem;
+    }
+
+    select {
+      min-width: 220px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.5rem;
+    }
+
+    button[type="submit"] {
+      border-radius: 999px;
+      border: none;
+      padding: 0.75rem 1.4rem;
+      background: #111;
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button[type="submit"]:hover {
+      opacity: 0.9;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+
+    .error-message {
+      font-size: 0.85rem;
+      color: #a02222;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    /* RESULTS */
+    .results {
+      display: none;
+    }
+
+    .results.is-visible {
+      display: block;
+    }
+
+    .results-summary {
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .results-summary strong {
+      font-weight: 600;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .card {
+      background: #fffdf8;
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.03);
+      font-size: 0.9rem;
+    }
+
+    .card h2 {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .count-highlight {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .count-label {
+      font-size: 0.8rem;
+      opacity: 0.75;
+    }
+
+    /* ==== SINGLE MODE LEFT: PEAR COUNTER ==== */
+.count-panel {
+  /* no card border/shadow – just simple layout */
+  padding: 0.25rem 0.25rem 0.5rem;
+}
+
+.count-panel h2 {
+  font-size: 0.95rem;
+  margin-bottom: 0.6rem;
+}
+
+.count-pear-wrapper {
+  position: relative;
+  width: 220px;
+  max-width: 70%;
+  margin: 0 auto 0.5rem;
+}
+
+.count-pear-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.count-pear-number {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1;
+}
+
+/* keep the small text under the pear nicely spaced */
+.count-panel {
+  margin-top: 0.3rem;
+}
+
+.count-label{
+  margin-top:2rem;
+}
+
+
+    .muted {
+      opacity: 0.7;
+      font-size: 0.83rem;
+      margin-top: 0.4rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+
+    th,
+    td {
+      padding: 0.25rem 0.15rem;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(0, 0, 0, 0.015);
+    }
+
+
+    /* ==== COMPARE MODE LAYOUT (no cards) ==== */
+.results-compare-layout {
+  margin-top: 3rem;
+}
+
+.compare-main {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.compare-side {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.compare-bar-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+}
+
+/* vertical bar itself */
+.vertical-bar-track {
+  width: 14px;
+  height: 200px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.vertical-bar-fill {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: #222;
+  transform-origin: bottom center;
+  transform: scaleY(0);
+  transition: transform 0.25s ease;
+}
+
+/* Play B gets a lighter bar color */
+#bar-b-vert {
+  background: #888;
+}
+
+.compare-text {
+  font-size: 0.85rem;
+}
+
+.compare-play-label {
+  font-weight: 600;
+}
+
+.compare-count-label {
+  opacity: 0.8;
+  margin-top: 0.1rem;
+  font-size: 0.82rem;
+}
+
+.compare-middle {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.compare-pear {
+  width: 180px;
+  height: auto;
+}
+
+.compare-caption {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+/* Responsive: stack A · pear · B vertically on small screens */
+@media (max-width: 768px) {
+  .compare-main {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .compare-side {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+/* compare layout: name + count, with bar below */
+.compare-item {
+  margin-bottom: 0.75rem;
+}
+
+.compare-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+}
+
+/* you already have these, but keep them: */
+.compare-bar-track {
+  height: 0.4rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+}
+
+.compare-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #222;
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+.compare-bar-fill.play-b {
+  background: #888;
+}
+
+
+    @media (max-width: 768px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <a href="index.html" class="back-link">← Back to home</a>
+      <h1>Word Frequency</h1>
+      <p class="subtitle">
+        Switch between counting a word in a single play, or comparing the same word across two plays using the Folger Digital Texts concordance.
+      </p>
+    </header>
+
+    <!-- MODE TOGGLE -->
+    <div class="mode-toggle" id="mode-toggle">
+      <button
+        type="button"
+        class="mode-button is-active"
+        data-mode="single"
+        id="btn-single"
+      >
+        Count in one play
+      </button>
+      <button
+        type="button"
+        class="mode-button"
+        data-mode="compare"
+        id="btn-compare"
+      >
+        Compare two plays
+      </button>
+    </div>
+
+    <!-- SHARED ERROR MESSAGE -->
+    <div class="error-message" id="error-message" style="display:none;"></div>
+
+    <!-- SINGLE MODE SHELL -->
+    <section class="shell" id="shell-single">
+      <form id="form-single">
+        <div class="form-row">
+          <span class="label">Play</span>
+          <select id="play-single">
+            <option value="Ham">Hamlet</option>
+            <option value="AWW">All's Well That Ends Well</option>
+            <option value="Ant">Antony and Cleopatra</option>
+            <option value="AYL">As You Like It</option>
+            <option value="Err">The Comedy of Errors</option>
+            <option value="Cor">Coriolanus</option>
+            <option value="Cym">Cymbeline</option>
+
+            <option value="1H4">Henry IV, Part 1</option>
+            <option value="2H4">Henry IV, Part 2</option>
+            <option value="H5">Henry V</option>
+            <option value="1H6">Henry VI, Part 1</option>
+            <option value="2H6">Henry VI, Part 2</option>
+            <option value="3H6">Henry VI, Part 3</option>
+            <option value="H8">Henry VIII</option>
+
+            <option value="JC">Julius Caesar</option>
+            <option value="Jn">King John</option>
+            <option value="Lr">King Lear</option>
+            <option value="LLL">Love's Labor's Lost</option>
+            <option value="Mac">Macbeth</option>
+            <option value="MM">Measure for Measure</option>
+            <option value="MV">The Merchant of Venice</option>
+            <option value="Wiv">The Merry Wives of Windsor</option>
+            <option value="MND">A Midsummer Night's Dream</option>
+            <option value="Ado">Much Ado About Nothing</option>
+            <option value="Oth">Othello</option>
+            <option value="Per">Pericles</option>
+            <option value="R2">Richard II</option>
+            <option value="R3">Richard III</option>
+            <option value="Rom">Romeo and Juliet</option>
+            <option value="Shr">The Taming of the Shrew</option>
+            <option value="Tmp">The Tempest</option>
+            <option value="Tim">Timon of Athens</option>
+            <option value="Tit">Titus Andronicus</option>
+            <option value="Tro">Troilus and Cressida</option>
+            <option value="TN">Twelfth Night</option>
+            <option value="TGV">Two Gentlemen of Verona</option>
+            <option value="TNK">Two Noble Kinsmen</option>
+            <option value="WT">The Winter's Tale</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <span class="label">Word</span>
+          <input
+            type="text"
+            id="word-single"
+            placeholder="e.g. love, blood, night"
+          />
+        </div>
+
+        <p class="hint">
+          We normalize to lowercase and strip punctuation (so “Love” and “love” are counted together).
+        </p>
+
+        <div class="button-row">
+          <button type="submit">Count this word</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- COMPARE MODE SHELL -->
+    <section class="shell hidden" id="shell-compare">
+      <form id="form-compare">
+        <div class="form-row">
+          <span class="label">Play A</span>
+          <select id="play-a">
+            <option value="Ham">Hamlet</option>
+            <option value="AWW">All's Well That Ends Well</option>
+            <option value="Ant">Antony and Cleopatra</option>
+            <option value="AYL">As You Like It</option>
+            <option value="Err">The Comedy of Errors</option>
+            <option value="Cor">Coriolanus</option>
+            <option value="Cym">Cymbeline</option>
+
+            <option value="1H4">Henry IV, Part 1</option>
+            <option value="2H4">Henry IV, Part 2</option>
+            <option value="H5">Henry V</option>
+            <option value="1H6">Henry VI, Part 1</option>
+            <option value="2H6">Henry VI, Part 2</option>
+            <option value="3H6">Henry VI, Part 3</option>
+            <option value="H8">Henry VIII</option>
+
+            <option value="JC">Julius Caesar</option>
+            <option value="Jn">King John</option>
+            <option value="Lr">King Lear</option>
+            <option value="LLL">Love's Labor's Lost</option>
+            <option value="Mac">Macbeth</option>
+            <option value="MM">Measure for Measure</option>
+            <option value="MV">The Merchant of Venice</option>
+            <option value="Wiv">The Merry Wives of Windsor</option>
+            <option value="MND">A Midsummer Night's Dream</option>
+            <option value="Ado">Much Ado About Nothing</option>
+            <option value="Oth">Othello</option>
+            <option value="Per">Pericles</option>
+            <option value="R2">Richard II</option>
+            <option value="R3">Richard III</option>
+            <option value="Rom">Romeo and Juliet</option>
+            <option value="Shr">The Taming of the Shrew</option>
+            <option value="Tmp">The Tempest</option>
+            <option value="Tim">Timon of Athens</option>
+            <option value="Tit">Titus Andronicus</option>
+            <option value="Tro">Troilus and Cressida</option>
+            <option value="TN">Twelfth Night</option>
+            <option value="TGV">Two Gentlemen of Verona</option>
+            <option value="TNK">Two Noble Kinsmen</option>
+            <option value="WT">The Winter's Tale</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <span class="label">Play B</span>
+          <select id="play-b">
+            <option value="Mac">Macbeth</option>
+            <option value="Ham">Hamlet</option>
+            <option value="AWW">All's Well That Ends Well</option>
+            <option value="Ant">Antony and Cleopatra</option>
+            <option value="AYL">As You Like It</option>
+            <option value="Err">The Comedy of Errors</option>
+            <option value="Cor">Coriolanus</option>
+            <option value="Cym">Cymbeline</option>
+
+            <option value="1H4">Henry IV, Part 1</option>
+            <option value="2H4">Henry IV, Part 2</option>
+            <option value="H5">Henry V</option>
+            <option value="1H6">Henry VI, Part 1</option>
+            <option value="2H6">Henry VI, Part 2</option>
+            <option value="3H6">Henry VI, Part 3</option>
+            <option value="H8">Henry VIII</option>
+
+            <option value="JC">Julius Caesar</option>
+            <option value="Jn">King John</option>
+            <option value="Lr">King Lear</option>
+            <option value="LLL">Love's Labor's Lost</option>
+            <option value="MM">Measure for Measure</option>
+            <option value="MV">The Merchant of Venice</option>
+            <option value="Wiv">The Merry Wives of Windsor</option>
+            <option value="MND">A Midsummer Night's Dream</option>
+            <option value="Ado">Much Ado About Nothing</option>
+            <option value="Oth">Othello</option>
+            <option value="Per">Pericles</option>
+            <option value="R2">Richard II</option>
+            <option value="R3">Richard III</option>
+            <option value="Rom">Romeo and Juliet</option>
+            <option value="Shr">The Taming of the Shrew</option>
+            <option value="Tmp">The Tempest</option>
+            <option value="Tim">Timon of Athens</option>
+            <option value="Tit">Titus Andronicus</option>
+            <option value="Tro">Troilus and Cressida</option>
+            <option value="TN">Twelfth Night</option>
+            <option value="TGV">Two Gentlemen of Verona</option>
+            <option value="TNK">Two Noble Kinsmen</option>
+            <option value="WT">The Winter's Tale</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <span class="label">Word</span>
+          <input
+            type="text"
+            id="word-compare"
+            placeholder="e.g. love, blood, night"
+          />
+        </div>
+
+        <p class="hint">
+          We normalize to lowercase and strip punctuation in both plays.
+        </p>
+
+        <div class="button-row">
+          <button type="submit">Compare this word</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- RESULTS -->
+        <!-- RESULTS -->
+        <section class="results" id="results">
+          <div class="results-summary" id="results-summary"></div>
+    
+          <!-- SINGLE MODE LAYOUT: left + right cards -->
+          <div class="results-grid" id="results-single-layout">
+            <!-- LEFT: word details with pear count -->
+            <div class="count-panel">
+              <div class="count-pear-wrapper">
+                <img
+                  src="illustration/pearicon.png"
+                  alt="Word count pear"
+                  class="count-pear-image"
+                />
+                <div class="count-pear-number" id="word-count-a">–</div>
+              </div>
+            
+              <div class="count-label" id="word-count-label-a"></div>
+              <p class="muted" id="word-extra-a"></p>
+            </div>
+            
+    
+            <!-- RIGHT CARD: single-mode top words -->
+            <article class="card" id="right-card">
+              <div class="right-mode right-mode-single" id="right-single">
+                <h2 id="top-words-title" style="margin-bottom:0.25rem;">
+                  You might also want to search for...
+                </h2>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Word</th>
+                      <th>Count</th>
+                    </tr>
+                  </thead>
+                  <tbody id="top-words-body"></tbody>
+                </table>
+
+              </div>
+            </article>
+          </div>
+    
+          <!-- COMPARE MODE LAYOUT: vertical bars + pear in the center -->
+          <div class="results-compare-layout" id="results-compare-layout" style="display:none;">
+            <div class="compare-main">
+              <!-- Play A side -->
+              <div class="compare-side compare-side-a">
+                <div class="compare-bar-row">
+                  <div class="vertical-bar-track">
+                    <div class="vertical-bar-fill" id="bar-a-vert"></div>
+                  </div>
+                  <div class="compare-text compare-text-a">
+                    <div class="compare-play-label" id="compare-label-a-main">Play A</div>
+                    <div class="compare-count-label" id="compare-count-a-main"></div>
+                  </div>
+                </div>
+              </div>
+    
+              <!-- Pear in the middle -->
+              <div class="compare-middle">
+                <img
+                  src="illustration/pearcompare.png"
+                  alt="Pear comparison icon"
+                  class="compare-pear"
+                />
+              </div>
+    
+              <!-- Play B side -->
+              <div class="compare-side compare-side-b">
+                <div class="compare-bar-row">
+                  <div class="compare-text compare-text-b">
+                    <div class="compare-play-label" id="compare-label-b-main">Play B</div>
+                    <div class="compare-count-label" id="compare-count-b-main"></div>
+                  </div>
+                  <div class="vertical-bar-track">
+                    <div class="vertical-bar-fill" id="bar-b-vert"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+            <p class="muted compare-caption">
+              Bar height shows each play’s count scaled relative to the higher one.
+            </p>
+          </div>
+        </section>
+    
+  </div>
+
+  <div class="page-transition" id="pageTransition">
+    <img
+      src="illustration/pearicon.png"
+      alt="Rolling pear transition"
+      class="page-transition-pear"
+    />
+  </div>
+
+  </body>
+  <script>
+    const PLAY_TITLES = {
+      AWW: "All's Well That Ends Well",
+      Ant: "Antony and Cleopatra",
+      AYL: "As You Like It",
+      Err: "The Comedy of Errors",
+      Cor: "Coriolanus",
+      Cym: "Cymbeline",
+      Ham: "Hamlet",
+      "1H4": "Henry IV, Part 1",
+      "2H4": "Henry IV, Part 2",
+      H5: "Henry V",
+      "1H6": "Henry VI, Part 1",
+      "2H6": "Henry VI, Part 2",
+      "3H6": "Henry VI, Part 3",
+      H8: "Henry VIII",
+      JC: "Julius Caesar",
+      Jn: "King John",
+      Lr: "King Lear",
+      LLL: "Love's Labor's Lost",
+      Mac: "Macbeth",
+      MM: "Measure for Measure",
+      MV: "The Merchant of Venice",
+      Wiv: "The Merry Wives of Windsor",
+      MND: "A Midsummer Night's Dream",
+      Ado: "Much Ado About Nothing",
+      Oth: "Othello",
+      Per: "Pericles",
+      R2: "Richard II",
+      R3: "Richard III",
+      Rom: "Romeo and Juliet",
+      Shr: "The Taming of the Shrew",
+      Tmp: "The Tempest",
+      Tim: "Timon of Athens",
+      Tit: "Titus Andronicus",
+      Tro: "Troilus and Cressida",
+      TN: "Twelfth Night",
+      TGV: "Two Gentlemen of Verona",
+      TNK: "Two Noble Kinsmen",
+      WT: "The Winter's Tale",
+    };
+
+    // Mode toggle
+    const btnSingle = document.getElementById("btn-single");
+    const btnCompare = document.getElementById("btn-compare");
+    const shellSingle = document.getElementById("shell-single");
+    const shellCompare = document.getElementById("shell-compare");
+
+    const errorMessage = document.getElementById("error-message");
+
+    const modeToggle = document.getElementById("mode-toggle");
+    if (modeToggle) {
+  modeToggle.dataset.mode = "single";
+}
+
+    // Forms & inputs
+    const formSingle = document.getElementById("form-single");
+    const playSingleSelect = document.getElementById("play-single");
+    const wordSingleInput = document.getElementById("word-single");
+
+    const formCompare = document.getElementById("form-compare");
+    const playASelect = document.getElementById("play-a");
+    const playBSelect = document.getElementById("play-b");
+    const wordCompareInput = document.getElementById("word-compare");
+
+    // Results
+    const resultsSection = document.getElementById("results");
+    const resultsSummary = document.getElementById("results-summary");
+
+    const wordCountAEl = document.getElementById("word-count-a");
+    const wordCountLabelAEl = document.getElementById("word-count-label-a");
+    const wordExtraAEl = document.getElementById("word-extra-a");
+
+    const topWordsTitle = document.getElementById("top-words-title");
+const rightSingle = document.getElementById("right-single");
+const rightCompare = document.getElementById("right-compare");
+
+const topWordsBody = document.getElementById("top-words-body");
+
+// layouts
+const resultsSingleLayout = document.getElementById("results-single-layout");
+const resultsCompareLayout = document.getElementById("results-compare-layout");
+
+// compare layout elements (vertical bars + labels)
+const compareLabelAMain = document.getElementById("compare-label-a-main");
+const compareLabelBMain = document.getElementById("compare-label-b-main");
+const compareCountAMain = document.getElementById("compare-count-a-main");
+const compareCountBMain = document.getElementById("compare-count-b-main");
+const barAVert = document.getElementById("bar-a-vert");
+const barBVert = document.getElementById("bar-b-vert");
+
+
+    const CONCORDANCE_CACHE = {}; // { playCode: { word: count } }
+
+    function setMode(mode) {
+  if (mode === "single") {
+    btnSingle.classList.add("is-active");
+    btnCompare.classList.remove("is-active");
+    shellSingle.classList.remove("hidden");
+    shellCompare.classList.add("hidden");
+    errorMessage.style.display = "none";
+  } else {
+    btnSingle.classList.remove("is-active");
+    btnCompare.classList.add("is-active");
+    shellSingle.classList.add("hidden");
+    shellCompare.classList.remove("hidden");
+    errorMessage.style.display = "none";
+  }
+
+  if (modeToggle) {
+    modeToggle.dataset.mode = mode;
+  }
+}
+
+
+    btnSingle.addEventListener("click", () => setMode("single"));
+    btnCompare.addEventListener("click", () => setMode("compare"));
+
+    function normalizeWord(w) {
+      return w
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "")
+        .trim();
+    }
+
+    async function loadConcordance(playCode) {
+      if (CONCORDANCE_CACHE[playCode]) return CONCORDANCE_CACHE[playCode];
+
+      const url = `https://www.folgerdigitaltexts.org/${playCode}/concordance/`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const html = await response.text();
+      const tmp = document.createElement("div");
+      tmp.innerHTML = html;
+      const plain = tmp.textContent || tmp.innerText || "";
+
+      const lines = plain.split(/\n+/);
+      const freq = {};
+
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line) continue;
+
+        // Format: "639: The" (count first, then word)
+        const match = line.match(/^(\d+):\s+(.+)$/);
+        if (!match) continue;
+
+        const countStr = match[1];
+        const wordRaw = match[2];
+
+        const word = normalizeWord(wordRaw);
+        const count = parseInt(countStr, 10);
+
+        if (!word || isNaN(count)) continue;
+
+        freq[word] = (freq[word] || 0) + count;
+      }
+
+      CONCORDANCE_CACHE[playCode] = freq;
+      return freq;
+    }
+
+    function getRandomWords(freq, excludeWord, limit = 10) {
+  // Turn freq object into [word, count] pairs
+  const entries = Object.entries(freq).filter(([word, count]) => {
+    if (!word) return false;
+    if (word === excludeWord) return false;
+    if (word.length <= 2) return false; // still ignore tiny filler words
+    return true;
+  });
+
+  // If there are fewer than limit, just return them all
+  if (entries.length <= limit) return entries;
+
+  // Fisher–Yates shuffle
+  for (let i = entries.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [entries[i], entries[j]] = [entries[j], entries[i]];
+  }
+
+  // Take the first `limit` entries as our random suggestions
+  return entries.slice(0, limit);
+}
+
+
+    function describeCount(count) {
+      if (count === 0) {
+        return "No occurrences found in this play’s concordance.";
+      } else if (count < 5) {
+        return "This word is relatively rare in this play.";
+      } else if (count < 20) {
+        return "This word shows up a fair number of times.";
+      } else {
+        return "This word is one of the stronger motifs in this play.";
+      }
+    }
+
+    function setCompareBars(countA, countB) {
+  const max = Math.max(countA, countB, 1);
+  const ratioA = countA / max;
+  const ratioB = countB / max;
+
+  if (barAVert) barAVert.style.transform = `scaleY(${ratioA})`;
+  if (barBVert) barBVert.style.transform = `scaleY(${ratioB})`;
+}
+
+
+function clearResults() {
+  resultsSection.classList.remove("is-visible");
+  resultsSummary.textContent = "";
+  wordCountAEl.textContent = "–";
+  wordCountLabelAEl.textContent = "";
+  wordExtraAEl.textContent = "";
+  topWordsBody.innerHTML = "";
+
+  // default back to single-layout if needed
+  if (resultsSingleLayout) {
+    resultsSingleLayout.style.display = "grid";
+  }
+  if (resultsCompareLayout) {
+    resultsCompareLayout.style.display = "none";
+  }
+
+  if (barAVert) barAVert.style.transform = "scaleY(0)";
+  if (barBVert) barBVert.style.transform = "scaleY(0)";
+}
+
+
+    // SINGLE MODE
+    formSingle.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  errorMessage.style.display = "none";
+  errorMessage.textContent = "";
+  clearResults();
+
+  const playCode = playSingleSelect.value;
+  const playTitle = PLAY_TITLES[playCode] || playCode;
+  const rawWord = wordSingleInput.value || "";
+  const normalized = normalizeWord(rawWord);
+
+  if (!normalized) {
+    errorMessage.style.display = "block";
+    errorMessage.textContent = "Please type a word to analyze.";
+    return;
+  }
+
+  try {
+    const freq = await loadConcordance(playCode);
+    const count = freq[normalized] || 0;
+
+    // Summary sentence at the top
+    resultsSummary.innerHTML = `
+      <strong>“${normalized}” in ${playTitle}</strong>:
+    `;
+
+    // Left pear count panel
+    wordCountAEl.textContent = count;
+    wordCountLabelAEl.textContent = describeCount(count);
+    wordExtraAEl.textContent =
+      count === 0
+        ? "Try a simpler spelling (for example, love instead of lov’d), or pick another play."
+        : "";
+
+    // RIGHT SIDE: random suggestions instead of top words
+    const suggestions = getRandomWords(freq, normalized, 10);
+    suggestions.forEach(([w, c]) => {
+      const tr = document.createElement("tr");
+      const tdWord = document.createElement("td");
+      const tdCount = document.createElement("td");
+      tdWord.textContent = w;
+      tdCount.textContent = c;
+      tr.appendChild(tdWord);
+      tr.appendChild(tdCount);
+      topWordsBody.appendChild(tr);
+    });
+
+    // Heading for the suggestion list
+    if (topWordsTitle) {
+      topWordsTitle.textContent = "You might also want to search for…";
+    }
+
+    // Make sure we’re in single layout (not compare layout)
+    if (resultsSingleLayout && resultsCompareLayout) {
+      resultsSingleLayout.style.display = "grid";
+      resultsCompareLayout.style.display = "none";
+    }
+
+    // Show the whole results section
+    resultsSection.classList.add("is-visible");
+  } catch (err) {
+    console.error(err);
+    errorMessage.style.display = "block";
+    errorMessage.textContent =
+      "There was a problem loading the concordance from Folger. Some browsers may block this because of cross-origin (CORS) rules.";
+  }
+});
+
+
+    // COMPARE MODE
+    formCompare.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorMessage.style.display = "none";
+      errorMessage.textContent = "";
+      clearResults();
+
+      const playA = playASelect.value;
+      const playB = playBSelect.value;
+      const playATitle = PLAY_TITLES[playA] || playA;
+      const playBTitle = PLAY_TITLES[playB] || playB;
+
+      const rawWord = wordCompareInput.value || "";
+      const normalized = normalizeWord(rawWord);
+
+      if (!normalized) {
+        errorMessage.style.display = "block";
+        errorMessage.textContent = "Please type a word to analyze.";
+        return;
+      }
+
+      if (playA === playB) {
+        errorMessage.style.display = "block";
+        errorMessage.textContent = "Choose two different plays to compare.";
+        return;
+      }
+
+      try {
+        const freqA = await loadConcordance(playA);
+        const freqB = await loadConcordance(playB);
+        const countA = freqA[normalized] || 0;
+        const countB = freqB[normalized] || 0;
+
+        resultsSummary.innerHTML = `
+          The word <strong>“${normalized}”</strong> appears
+          <strong>${countA}</strong> time${countA === 1 ? "" : "s"} in
+          <strong>${playATitle}</strong> and
+          <strong>${countB}</strong> time${countB === 1 ? "" : "s"} in
+          <strong>${playBTitle}</strong>.
+        `;
+
+        wordCountAEl.textContent = countA;
+        wordCountLabelAEl.textContent = describeCount(countA);
+        wordExtraAEl.textContent =
+          countA === 0
+            ? "In this play, the word doesn’t appear in the concordance at all."
+            : "";
+
+        // update the vertical compare layout
+        if (compareLabelAMain) {
+          compareLabelAMain.textContent = `Play A · ${playATitle}`;
+        }
+        if (compareLabelBMain) {
+          compareLabelBMain.textContent = `Play B · ${playBTitle}`;
+        }
+
+        if (compareCountAMain) {
+          compareCountAMain.textContent = `${countA} occurrence${countA === 1 ? "" : "s"}`;
+        }
+        if (compareCountBMain) {
+          compareCountBMain.textContent = `${countB} occurrence${countB === 1 ? "" : "s"}`;
+        }
+
+        setCompareBars(countA, countB);
+
+        // Show compare layout, hide single layout
+        if (resultsSingleLayout && resultsCompareLayout) {
+          resultsSingleLayout.style.display = "none";
+          resultsCompareLayout.style.display = "block";
+        }
+
+        resultsSection.classList.add("is-visible");
+
+      } catch (err) {
+        console.error(err);
+        errorMessage.style.display = "block";
+        errorMessage.textContent =
+          "There was a problem loading the concordance from Folger. Some browsers may block this because of cross-origin (CORS) rules.";
+      }
+    });
+
+    // ===== ROLLING PEAR TRANSITION BACK TO HOME =====
+const pageTransition = document.getElementById("pageTransition");
+const backLink = document.querySelector(".back-link");
+
+if (pageTransition && backLink) {
+  backLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    const href = backLink.getAttribute("href");
+    if (!href) return;
+
+    // show overlay + start rolling animation
+    pageTransition.classList.add("is-active");
+
+    // navigate after animation finishes
+    setTimeout(() => {
+      window.location.href = href;
+    }, 900); // match animation duration in CSS (0.9s)
+  });
+}
+  </script>
+</html>

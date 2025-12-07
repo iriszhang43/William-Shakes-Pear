@@ -1,0 +1,49 @@
+:root{
+    --primary: #fff7e0;
+  }
+/* ===== PAGE TRANSITION: ROLLING PEAR ===== */
+.page-transition {
+    position: fixed;
+    inset: 0;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  
+    transition: opacity 0.2s ease-out;
+    z-index: 9999; /* above everything else */
+  }
+  
+  .page-transition-pear {
+    width: 75vmax;   /* big enough to cover the whole screen */
+    height: auto;
+    transform: translateX(100vw) rotate(0deg);
+  }
+  
+  /* when active, show overlay + animate pear */
+  .page-transition.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .page-transition.is-active .page-transition-pear {
+    animation: pearScreenRoll 0.9s ease-in-out forwards;
+  }
+  
+  @keyframes pearScreenRoll {
+    0% {
+      transform: translateX(100vw) rotate(0deg);
+    }
+    40% {
+      transform: translateX(0) rotate(-540deg); /* center, covering screen */
+    }
+    100% {
+      transform: translateX(-100vw) rotate(-1080deg);
+    }
+  }
+  

@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Find the Line · William Shakes Pear</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+  <link rel="stylesheet" href="https://use.typekit.net/nmx3jjw.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pagetransition.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "phoreuscherokee", serif;
+      font-weight: 400;
+      background: #f7f5f0;
+      color: #1f1f1f;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .back-link {
+      font-size: 0.85rem;
+      opacity: 0.75;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .back-link:hover {
+      opacity: 1;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.6rem);
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      max-width: 520px;
+    }
+
+    /* ===== SEARCH AREA ===== */
+    .search-shell {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: padding-top 0.3s ease, align-items 0.3s ease;
+    }
+
+    .search-shell-inner {
+      width: 100%;
+      max-width: 720px;
+      transition: transform 0.3s ease, margin-top 0.3s ease;
+    }
+
+    .search-title {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.85;
+    }
+
+    .search-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: #fffdf8;
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem 1.2rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      position: relative;
+      z-index: 2;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      position: relative; 
+    }
+
+    .filters-select {
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      background: #fff;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 120px;
+      padding: 0.75rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      font-size: 0.95rem;
+      background: #fff;
+    }
+
+    .search-button {
+      border-radius: 999px;
+      border: none;
+      padding: 0.75rem 1.4rem;
+      background: #111;
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .search-button:hover {
+      opacity: 0.9;
+    }
+
+    .search-hint-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.2rem;
+    }
+
+    .search-hint {
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    .loading-indicator {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  opacity: 0.75;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.loading-indicator::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 2px solid #c2a86a;
+  border-top-color: transparent;
+  animation: spinPear 0.6s linear infinite;
+}
+
+@keyframes spinPear {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+    /* ===== AUTOCOMPLETE SUGGESTIONS ===== */
+    .suggestions {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      margin-top: 0.35rem;
+      background: #fffdf8;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+      max-height: 220px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+      display: none;
+      z-index: 3;
+    }
+
+    .suggestions.is-visible {
+      display: block;
+    }
+
+    .suggestion-item {
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+      background: #f6efe2;
+    }
+
+    .suggestion-line {
+      margin-bottom: 0.2rem;
+    }
+
+    .suggestion-meta {
+      opacity: 0.7;
+      font-size: 0.75rem;
+    }
+
+    /* ===== RESULTS ===== */
+    .results-shell {
+      margin-top: 2rem;
+      display: none;
+    }
+
+    .results-shell.is-visible {
+      display: block;
+    }
+
+    .results-header {
+      font-size: 0.9rem;
+      opacity: 0.75;
+      margin-bottom: 0.75rem;
+    }
+
+    .results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .result-card {
+      background: #fffdf8;
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.03);
+      font-size: 0.9rem;
+    }
+
+    .result-line {
+      margin-bottom: 0.4rem;
+    }
+
+    .result-line mark {
+      background: #ffe9a9;
+      padding: 0 0.1rem;
+    }
+
+    .result-context {
+      margin-bottom: 0.25rem;
+    }
+
+    .result-meta {
+      font-size: 0.8rem;
+      opacity: 0.75;
+      margin-top: 2.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .result-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.2rem;
+    }
+
+    .result-button {
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      background: #fff;
+      padding: 0.25rem 0.7rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    .result-button:hover {
+      background: #f7f2ea;
+    }
+
+    .no-results {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      padding: 1rem 0.25rem;
+    }
+
+    .error-message {
+      font-size: 0.85rem;
+      color: #a02222;
+      margin-top: 0.5rem;
+    }
+
+    /* ===== STATE WHEN WE HAVE RESULTS ===== */
+    body.has-results .search-shell {
+      align-items: flex-start;
+      padding-top: 1rem;
+    }
+
+    body.has-results .search-shell-inner {
+      margin-top: 0.5rem;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        padding-inline: 1.25rem;
+      }
+
+      .search-form {
+        padding: 1rem 1.1rem 1rem;
+      }
+
+      .search-row {
+        flex-wrap: wrap;
+      }
+
+      .filters-select {
+        width: 100%;
+      }
+
+      .search-button {
+        width: auto;
+      }
+
+      .suggestions {
+        max-height: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <a href="index.html" class="back-link">← Back to home</a>
+      <h1>Find the Line</h1>
+      <p class="subtitle">
+        Type or paste a line from Shakespeare and see where it appears.
+        This demo loads text from the Folger Digital Texts API and searches
+        through it in the browser. Suggestions help you avoid typos and
+        spelling differences.
+      </p>
+    </header>
+
+    <!-- SEARCH AREA -->
+    <section class="search-shell">
+      <div class="search-shell-inner">
+        <form class="search-form" id="line-search-form">
+          <div class="search-row">
+            <!-- filter on the LEFT -->
+            <select id="play-filter" class="filters-select">
+              <option value="all">All plays</option>
+
+              <option value="Ham">Hamlet</option>
+              <option value="AWW">All's Well That Ends Well</option>
+              <option value="Ant">Antony and Cleopatra</option>
+              <option value="AYL">As You Like It</option>
+              <option value="Err">The Comedy of Errors</option>
+              <option value="Cor">Coriolanus</option>
+              <option value="Cym">Cymbeline</option>
+
+              <option value="1H4">Henry IV, Part 1</option>
+              <option value="2H4">Henry IV, Part 2</option>
+              <option value="H5">Henry V</option>
+              <option value="1H6">Henry VI, Part 1</option>
+              <option value="2H6">Henry VI, Part 2</option>
+              <option value="3H6">Henry VI, Part 3</option>
+              <option value="H8">Henry VIII</option>
+
+              <option value="JC">Julius Caesar</option>
+              <option value="Jn">King John</option>
+              <option value="Lr">King Lear</option>
+              <option value="LLL">Love's Labor's Lost</option>
+              <option value="Mac">Macbeth</option>
+              <option value="MM">Measure for Measure</option>
+              <option value="MV">The Merchant of Venice</option>
+              <option value="Wiv">The Merry Wives of Windsor</option>
+              <option value="MND">A Midsummer Night's Dream</option>
+              <option value="Ado">Much Ado About Nothing</option>
+              <option value="Oth">Othello</option>
+              <option value="Per">Pericles</option>
+              <option value="R2">Richard II</option>
+              <option value="R3">Richard III</option>
+              <option value="Rom">Romeo and Juliet</option>
+              <option value="Shr">The Taming of the Shrew</option>
+              <option value="Tmp">The Tempest</option>
+              <option value="Tim">Timon of Athens</option>
+              <option value="Tit">Titus Andronicus</option>
+              <option value="Tro">Troilus and Cressida</option>
+              <option value="TN">Twelfth Night</option>
+              <option value="TGV">Two Gentlemen of Verona</option>
+              <option value="TNK">Two Noble Kinsmen</option>
+              <option value="WT">The Winter's Tale</option>
+            </select>
+
+            <input
+              type="text"
+              class="search-input"
+              id="line-query"
+              placeholder="e.g. To be, or not to be"
+              autocomplete="off"
+            />
+            <button class="search-button" type="submit">
+              Shake for results
+            </button>
+
+            <!-- suggestions dropdown -->
+            <div class="suggestions" id="suggestions"></div>
+          </div>
+
+          <div class="search-hint-row">
+            <span class="search-hint">
+              Matching ignores punctuation and case, and only matches whole words
+              (no “be” inside “bed”). Choose “All plays” to search the full set.
+            </span>
+          </div>
+
+          <div
+  id="loading-indicator"
+  class="loading-indicator"
+  style="display:none;"
+>
+  Shaking all the pears… searching the plays…
+</div>
+
+          <div class="error-message" id="error-message" style="display:none;"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- RESULTS AREA -->
+    <section class="results-shell" id="results-shell">
+      <div class="results-header" id="results-header"></div>
+      <div class="results-list" id="results-list"></div>
+    </section>
+  </div>
+
+  <div class="page-transition" id="pageTransition">
+    <img
+      src="illustration/pearicon.png"
+      alt="Rolling pear transition"
+      class="page-transition-pear"
+    />
+  </div>
+
+  </body>
+
+  <script>
+    // Play code -> title
+    const PLAY_TITLES = {
+      AWW: "All's Well That Ends Well",
+      Ant: "Antony and Cleopatra",
+      AYL: "As You Like It",
+      Err: "The Comedy of Errors",
+      Cor: "Coriolanus",
+      Cym: "Cymbeline",
+      Ham: "Hamlet",
+      "1H4": "Henry IV, Part 1",
+      "2H4": "Henry IV, Part 2",
+      H5: "Henry V",
+      "1H6": "Henry VI, Part 1",
+      "2H6": "Henry VI, Part 2",
+      "3H6": "Henry VI, Part 3",
+      H8: "Henry VIII",
+      JC: "Julius Caesar",
+      Jn: "King John",
+      Lr: "King Lear",
+      LLL: "Love's Labor's Lost",
+      Mac: "Macbeth",
+      MM: "Measure for Measure",
+      MV: "The Merchant of Venice",
+      Wiv: "The Merry Wives of Windsor",
+      MND: "A Midsummer Night's Dream",
+      Ado: "Much Ado About Nothing",
+      Oth: "Othello",
+      Per: "Pericles",
+      R2: "Richard II",
+      R3: "Richard III",
+      Rom: "Romeo and Juliet",
+      Shr: "The Taming of the Shrew",
+      Tmp: "The Tempest",
+      Tim: "Timon of Athens",
+      Tit: "Titus Andronicus",
+      Tro: "Troilus and Cressida",
+      TN: "Twelfth Night",
+      TGV: "Two Gentlemen of Verona",
+      TNK: "Two Noble Kinsmen",
+      WT: "The Winter's Tale",
+    };
+
+    const form = document.getElementById("line-search-form");
+    const input = document.getElementById("line-query");
+    const playFilter = document.getElementById("play-filter");
+    const resultsShell = document.getElementById("results-shell");
+    const resultsHeader = document.getElementById("results-header");
+    const resultsList = document.getElementById("results-list");
+    const errorMessage = document.getElementById("error-message");
+    const suggestionsBox = document.getElementById("suggestions");
+
+    // Cache play text as arrays of lines
+    const PLAY_CACHE = {}; // { playCode: [lines...] }
+
+    function normalize(str) {
+      return str
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    // Only match whole words (no "be" inside "bed")
+// Only match whole words (no "be" inside "bed")
+// lineText: the sentence from the play
+// queryTokens: array of normalized words from the query
+function lineMatchesQuery(lineText, queryTokens) {
+  if (!queryTokens.length) return false;
+
+  const lineTokens = normalize(lineText).split(" ").filter(Boolean);
+  return queryTokens.every((q) => lineTokens.includes(q));
+}
+
+
+    function highlightMatch(text, query) {
+      const tokens = normalize(query).split(" ").filter(Boolean);
+      if (!tokens.length) return text;
+
+      let highlighted = text;
+      tokens.forEach((token) => {
+        const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regex = new RegExp("\\b" + escaped + "\\b", "gi");
+        highlighted = highlighted.replace(regex, (m) => `<mark>${m}</mark>`);
+      });
+
+      return highlighted;
+    }
+
+    async function loadPlayLines(playCode) {
+  if (PLAY_CACHE[playCode]) return PLAY_CACHE[playCode];
+
+  const url = `https://www.folgerdigitaltexts.org/${playCode}/text/`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const html = await response.text();
+
+  // Strip HTML → plain text with original line breaks
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  let plain = tmp.textContent || tmp.innerText || "";
+
+  // Keep the original line structure first
+  const rawLines = plain.split(/\n+/);
+
+  // 1) Rebuild into a single string,
+  //    fixing mid-sentence capitals that come from line breaks.
+  let rebuilt = "";
+  let lastChar = "";
+
+  for (let i = 0; i < rawLines.length; i++) {
+    let line = rawLines[i].trim();
+    if (!line) continue;
+
+    // First non-space character of this line
+    const firstCharMatch = line.match(/^(\S)(.*)$/);
+    if (firstCharMatch) {
+      let firstChar = firstCharMatch[1];
+      let rest = firstCharMatch[2] || "";
+
+      // If the previous character was NOT end-of-sentence punctuation,
+      // and this line starts with an uppercase letter,
+      // treat it as a mid-sentence and lowercase it.
+      if (
+        lastChar &&
+        !/[.?!:;]/.test(lastChar) &&
+        /[A-Z]/.test(firstChar)
+      ) {
+        firstChar = firstChar.toLowerCase();
+      }
+
+      line = firstChar + rest;
+    }
+
+    // Add a space if needed between lines
+    if (rebuilt && !/\s$/.test(rebuilt)) {
+      rebuilt += " ";
+    }
+    rebuilt += line;
+
+    // update lastChar for the next iteration
+    const trimmed = rebuilt.trimEnd();
+    lastChar = trimmed.charAt(trimmed.length - 1) || lastChar;
+  }
+
+  // 2) Collapse any excessive whitespace
+  rebuilt = rebuilt.replace(/\s+/g, " ").trim();
+
+  // 3) Split into sentence-like chunks based on . ? !
+  const parts = rebuilt.split(/([.?!])/);
+  const sentences = [];
+
+  for (let i = 0; i < parts.length; i += 2) {
+    const textPart = (parts[i] || "").trim();
+    const punct = parts[i + 1] || ""; // ".", "?", "!", or ""
+    const sentence = (textPart + punct).trim();
+
+    // Filter out empties and very short fragments
+    if (sentence.length >= 30) {
+      sentences.push(sentence);
+    }
+  }
+
+  PLAY_CACHE[playCode] = sentences;
+  return sentences;
+}
+
+
+    // Search one play or all plays depending on playCode
+// Search one play or all plays depending on playCode
+async function searchPlay(playCode, query) {
+  const normQuery = normalize(query);
+  const queryTokens = normQuery.split(" ").filter(Boolean);
+  if (!queryTokens.length) return [];
+
+  const matches = [];
+
+  if (playCode !== "all") {
+    const lines = await loadPlayLines(playCode);
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (lineMatchesQuery(line, queryTokens)) {
+        const before = lines[i - 1] || "";
+        const after = lines[i + 1] || "";
+        matches.push({
+          playCode,
+          line,
+          before,
+          after,
+          index: i,
+        });
+      }
+    }
+  } else {
+    const codes = Object.keys(PLAY_TITLES);
+    for (const code of codes) {
+      const lines = await loadPlayLines(code);
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (lineMatchesQuery(line, queryTokens)) {
+          const before = lines[i - 1] || "";
+          const after = lines[i + 1] || "";
+          matches.push({
+            playCode: code,
+            line,
+            before,
+            after,
+            index: i,
+          });
+        }
+      }
+    }
+  }
+
+  return matches;
+}
+
+
+    function renderResults(query, playCode, matches) {
+      resultsList.innerHTML = "";
+
+      if (!query.trim()) {
+        resultsShell.classList.remove("is-visible");
+        resultsHeader.textContent = "";
+        document.body.classList.remove("has-results");
+        return;
+      }
+
+      document.body.classList.add("has-results");
+      resultsShell.classList.add("is-visible");
+
+      if (!matches.length) {
+        if (playCode === "all") {
+          resultsHeader.textContent = `No matches across all plays for “${query.trim()}”.`;
+        } else {
+          const playTitle = PLAY_TITLES[playCode] || playCode;
+          resultsHeader.textContent = `No matches in ${playTitle} for “${query.trim()}”.`;
+        }
+
+        const noRes = document.createElement("div");
+        noRes.className = "no-results";
+        noRes.textContent =
+          "Try a different fragment or spelling. The search only matches whole words, but ignores punctuation and capitalization.";
+        resultsList.appendChild(noRes);
+        return;
+      }
+
+      if (playCode === "all") {
+        const uniquePlays = new Set(matches.map((m) => m.playCode));
+        resultsHeader.textContent = `${matches.length} result${
+          matches.length > 1 ? "s" : ""
+        } across ${uniquePlays.size} play${
+          uniquePlays.size > 1 ? "s" : ""
+        } for “${query.trim()}”`;
+      } else {
+        const playTitle = PLAY_TITLES[playCode] || playCode;
+        resultsHeader.textContent = `${matches.length} result${
+          matches.length > 1 ? "s" : ""
+        } in ${playTitle} for “${query.trim()}”`;
+      }
+
+      matches.forEach((match) => {
+        const card = document.createElement("article");
+        card.className = "result-card";
+
+        if (match.before) {
+          const beforeEl = document.createElement("div");
+          beforeEl.className = "result-context";
+          beforeEl.style.opacity = "0.6";
+          beforeEl.style.fontSize = "0.82rem";
+          beforeEl.textContent = match.before;
+          card.appendChild(beforeEl);
+        }
+
+        const lineEl = document.createElement("div");
+        lineEl.className = "result-line";
+        lineEl.innerHTML = highlightMatch(match.line, query);
+        card.appendChild(lineEl);
+
+        if (match.after) {
+          const afterEl = document.createElement("div");
+          afterEl.className = "result-context";
+          afterEl.style.opacity = "0.6";
+          afterEl.style.fontSize = "0.82rem";
+          afterEl.textContent = match.after;
+          card.appendChild(afterEl);
+        }
+
+        const metaEl = document.createElement("div");
+        metaEl.className = "result-meta";
+        if (playCode === "all") {
+          metaEl.textContent =
+            (PLAY_TITLES[match.playCode] || match.playCode) +
+            " · line position approx. " +
+            (match.index + 1) +
+            " in that play (act/scene not shown in this demo).";
+        } else {
+          metaEl.textContent =
+            "Line position approx. " +
+            (match.index + 1) +
+            " in the full text (act/scene not shown in this demo).";
+        }
+        card.appendChild(metaEl);
+
+        const actions = document.createElement("div");
+        actions.className = "result-actions";
+
+        const openBtn = document.createElement("button");
+        openBtn.type = "button";
+        openBtn.className = "result-button";
+        openBtn.textContent = "Open full text on Folger";
+        const codeToOpen = playCode === "all" ? match.playCode : playCode;
+        openBtn.addEventListener("click", () => {
+          window.open(
+            `https://www.folgerdigitaltexts.org/${codeToOpen}/text/`,
+            "_blank"
+          );
+        });
+
+        actions.appendChild(openBtn);
+        card.appendChild(actions);
+
+        resultsList.appendChild(card);
+      });
+    }
+
+    async function renderSuggestions(query, playCode) {
+  suggestionsBox.innerHTML = "";
+
+  const trimmedQuery = query.trim();
+  if (trimmedQuery.length < 3) {
+    suggestionsBox.classList.remove("is-visible");
+    return;
+  }
+
+  const normQuery = normalize(query);
+  const queryTokens = normQuery.split(" ").filter(Boolean);
+  if (!queryTokens.length) {
+    suggestionsBox.classList.remove("is-visible");
+    return;
+  }
+
+  const matches = [];
+
+  try {
+    if (playCode !== "all") {
+      const lines = await loadPlayLines(playCode);
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (lineMatchesQuery(line, queryTokens)) {
+          matches.push({ playCode, line, index: i });
+          if (matches.length >= 6) break;
+        }
+      }
+    } else {
+      const codes = Object.keys(PLAY_TITLES);
+      for (const code of codes) {
+        const lines = await loadPlayLines(code);
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          if (lineMatchesQuery(line, queryTokens)) {
+            matches.push({ playCode: code, line, index: i });
+            if (matches.length >= 6) break;
+          }
+        }
+        if (matches.length >= 6) break;
+      }
+    }
+  } catch (err) {
+    console.error("Error rendering suggestions", err);
+  }
+
+  if (!matches.length) {
+    suggestionsBox.classList.remove("is-visible");
+    return;
+  }
+
+  matches.forEach((m) => {
+    const item = document.createElement("div");
+    item.className = "suggestion-item";
+
+    const lineDiv = document.createElement("div");
+    lineDiv.className = "suggestion-line";
+    lineDiv.innerHTML = highlightMatch(m.line, query);
+
+    const metaDiv = document.createElement("div");
+    metaDiv.className = "suggestion-meta";
+    metaDiv.textContent = PLAY_TITLES[m.playCode] || m.playCode;
+
+    item.appendChild(lineDiv);
+    item.appendChild(metaDiv);
+
+    item.addEventListener("click", () => {
+      input.value = m.line;
+      suggestionsBox.classList.remove("is-visible");
+    });
+
+    suggestionsBox.appendChild(item);
+  });
+
+  suggestionsBox.classList.add("is-visible");
+}
+
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      errorMessage.style.display = "none";
+      errorMessage.textContent = "";
+      suggestionsBox.classList.remove("is-visible");
+
+      const query = input.value || "";
+      const playCode = playFilter.value;
+
+      if (!query.trim()) {
+        renderResults("", playCode, []);
+        return;
+      }
+
+      try {
+        const matches = await searchPlay(playCode, query);
+        renderResults(query, playCode, matches);
+      } catch (err) {
+        console.error(err);
+        errorMessage.style.display = "block";
+        errorMessage.textContent =
+          "There was a problem loading text from Folger. Some browsers may block this because of cross-origin (CORS) rules.";
+      }
+    });
+
+    input.addEventListener("input", () => {
+      const query = input.value || "";
+      const playCode = playFilter.value;
+      renderSuggestions(query, playCode);
+    });
+
+    playFilter.addEventListener("change", () => {
+      const query = input.value || "";
+      if (!query.trim()) {
+        suggestionsBox.classList.remove("is-visible");
+        return;
+      }
+      renderSuggestions(query, playFilter.value);
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!form.contains(e.target)) {
+        suggestionsBox.classList.remove("is-visible");
+      }
+    });
+
+    // ===== ROLLING PEAR TRANSITION BACK TO HOME =====
+const pageTransition = document.getElementById("pageTransition");
+const backLink = document.querySelector(".back-link");
+
+if (pageTransition && backLink) {
+  backLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    const href = backLink.getAttribute("href");
+    if (!href) return;
+
+    // show overlay + start rolling animation
+    pageTransition.classList.add("is-active");
+
+    // navigate after animation finishes
+    setTimeout(() => {
+      window.location.href = href;
+    }, 900); // match animation duration in CSS (0.9s)
+  });
+}
+
+const loadingIndicator = document.getElementById("loading-indicator");
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  errorMessage.style.display = "none";
+  errorMessage.textContent = "";
+  suggestionsBox.classList.remove("is-visible");
+
+  const query = input.value || "";
+  const playCode = playFilter.value;
+
+  if (!query.trim()) {
+    renderResults("", playCode, []);
+    return;
+  }
+
+  // Show loading state
+  if (loadingIndicator) loadingIndicator.style.display = "flex";
+  form.querySelector(".search-button").disabled = true;
+
+  try {
+    const matches = await searchPlay(playCode, query);
+    renderResults(query, playCode, matches);
+  } catch (err) {
+    console.error(err);
+    errorMessage.style.display = "block";
+    errorMessage.textContent =
+      "There was a problem loading text from Folger. Some browsers may block this because of cross-origin (CORS) rules.";
+  } finally {
+    if (loadingIndicator) loadingIndicator.style.display = "none";
+    form.querySelector(".search-button").disabled = false;
+  }
+});
+
+  </script>
+
+</html>

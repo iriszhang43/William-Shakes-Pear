@@ -1,0 +1,43 @@
+/* ====== BASIC RESET ====== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: "phoreuscherokee", serif;
+    font-weight: 400;
+    color: #1f1f1f;
+    background: #f7f5f0;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  button{
+    font: inherit;
+  }
+
+  /* Make all form controls inherit the page font */
+input,
+select,
+button,
+textarea,
+option {
+  font-family: inherit;
+}
+
+/* Make placeholders also match */
+input::placeholder,
+textarea::placeholder {
+  font-family: inherit;
+  font-style: normal;
+}
+input,select:focus {
+    outline: none;
+  }
