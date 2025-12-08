@@ -71,7 +71,6 @@
 
     /* ===== SPOTLIGHT EFFECT ===== */
     :root {
-      /* spotlight position in viewport % */
       --spot-x: 100%;
       --spot-y: 0%;
     }
@@ -113,23 +112,21 @@
   color: #5c5147;
 
   position: relative;
-  min-height: 1.4em; /* reserve space so layout doesn't jump */
+  min-height: 1.4em; 
 }
 
-/* both lines sit in the exact same spot */
 .filter-help-main,
 .filter-help-tip {
   position: absolute;
   left: 50%;
   top: 0;
   transform: translateX(-50%);
-  white-space: nowrap; /* optional, remove if you want wrapping */
+  white-space: nowrap; 
   transition:
     opacity 0.2s ease-out,
     transform 0.2s ease-out;
 }
 
-/* default: main visible, tip hidden */
 .filter-help-main {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
@@ -141,7 +138,6 @@
   z-index: 1000;
 }
 
-/* when a filter is active, swap them */
 body.has-active-filter .filter-help-main {
   opacity: 0;
   transform: translateX(-50%) translateY(-3px);
@@ -216,18 +212,15 @@ body.has-active-filter .filter-help-tip {
       opacity: 1;
     }
 
-    /* active: same as hover – full opacity + popped */
     .filter-pill.is-active .filter-pill-label {
       opacity: 1;
     }
 
-    /* active state: icon shakes */
     .filter-pill.is-active .filter-pill-icon {
       animation: pearShake 0.4s ease-in-out;
     }
 
 
-    /* active state (click selection) – keeps only icon styling */
     .filter-pill.is-active {
       filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
     }
@@ -268,7 +261,6 @@ body.has-active-filter .filter-help-tip {
 
       position: relative;
       z-index: 4;
-      /* above spotlight */
     }
 
     .list {
@@ -595,7 +587,6 @@ body.has-active-filter .filter-help-tip {
     }
   }
 
-  // Build the list ONCE so we don't lose loaded synopses
   function buildInitialList() {
     WORKS.forEach((work) => {
       const details = document.createElement("details");
@@ -657,7 +648,6 @@ body.has-active-filter .filter-help-tip {
         const playCode = work.playCode;
         const synopsisUrl = `https://www.folgerdigitaltexts.org/${playCode}/synopsis/`;
 
-        // If we already fetched it once, just reuse
         if (SYNOPSIS_CACHE[playCode]) {
           synopsisContainer.innerHTML = SYNOPSIS_CACHE[playCode];
           return;
@@ -671,7 +661,6 @@ body.has-active-filter .filter-help-tip {
           const tmp = document.createElement("div");
           tmp.innerHTML = synopsisHtml;
 
-          // Remove "Synopsis of ..." heading
           const headingToRemove = Array.from(
             tmp.querySelectorAll("h1, h2, h3")
           ).find((h) => /synopsis\s+of/i.test(h.textContent));

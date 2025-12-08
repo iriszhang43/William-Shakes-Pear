@@ -72,14 +72,14 @@
     .lab-shell{
   flex: 1;
   display: flex;
-  justify-content: center;  /* horizontal center */
-  align-items: center;      /* vertical center */
+  justify-content: center; 
+  align-items: center;   
   padding-top: 0rem;
 }
 
 .lab-shell > div{
   width: 100%;
-  max-width: 720px;         /* card width cap */
+  max-width: 720px;       
 }
 
     @media (max-width: 800px) {
@@ -259,15 +259,13 @@
       margin-bottom: 0.9rem;
     }
 
-/* actions row: centered main button */
 .result-actions{
   display: flex;
-  justify-content: center;  /* center "Pear me again" */
+  justify-content: center; 
   align-items: center;
   margin-top: 0.9rem;
 }
 
-/* primary action (matches Next button style) */
 .result-actions .result-button{
   border-radius: 999px;
   border: none;
@@ -283,13 +281,10 @@
   opacity: 0.9;
 }
 
-/* make card a positioning context for the restart button */
-/* make card a positioning context */
 .result-shell{
   position: relative;
 }
 
-/* TOP-RIGHT light button (Pear me again) */
 .result-pearmore{
   position: absolute;
   top: 0.9rem;
@@ -306,7 +301,6 @@
   background: #f7f2ea;
 }
 
-/* bottom row for Restart */
 .result-actions{
   display: flex;
   justify-content: center;
@@ -314,7 +308,6 @@
   margin-top: 0.9rem;
 }
 
-/* bottom DARK button (Restart) */
 .result-actions .result-button{
   border-radius: 999px;
   border: none;
@@ -564,7 +557,6 @@
     // ===== QUIZ DATA =====
     const THEMES = ["love", "night", "sea", "storm"];
 
-    // Five questions – each answer secretly pushes a theme
     const QUESTIONS = [
       {
         text: "Pick today’s pear mood:",
@@ -679,7 +671,7 @@ function startResultPearAnimation(theme){
   resultPearTimer = setInterval(() => {
     resultPearFrameIndex = (resultPearFrameIndex + 1) % frames.length;
     revealPear.src = frames[resultPearFrameIndex];
-  }, 220); // speed of animation (ms) — tweak as you like
+  }, 220); 
 }
 
 
@@ -693,7 +685,7 @@ function startLoadingColorCycle(){
       "--reveal-bg",
       LOADING_COLORS[loadingColorIndex]
     );
-  }, 240); // tweak speed
+  }, 240); 
 }
 
 function stopLoadingColorCycle(){
@@ -773,7 +765,6 @@ const revealPear = document.getElementById("revealPear");
     let themeScores = {};
     let finalTheme = null;
 
-    // Store last fetched poem for "open full poem" button
     let lastPoem = null;
     let lastKeyword = null;
 
@@ -849,7 +840,6 @@ const revealPear = document.getElementById("revealPear");
         currentQuestionIndex += 1;
         renderQuestion();
       } else {
-        // quiz finished
         finishQuiz();
       }
     }
@@ -963,7 +953,7 @@ async function refreshWithReveal(){
   s = s.replace(/\s+/g, " ").trim();
 
   s = s.replace(/(\.{2,}|…)\s*[\)\]\}]+$/g, "");
-  s = s.replace(/[\)\]\}]+$/g, ""); // stray closing bracket at end
+  s = s.replace(/[\)\]\}]+$/g, ""); 
 
   const opens = (s.match(/\(/g) || []).length;
   const closes = (s.match(/\)/g) || []).length;
@@ -981,7 +971,7 @@ async function refreshWithReveal(){
       resultExplainer.textContent = "";
       lastPoem = null;
 
-      const keyword = theme; // same string we’ll search in PoetryDB
+      const keyword = theme; 
       const url = `https://poetrydb.org/lines/${encodeURIComponent(
         keyword
       )}/title,author,lines`;
@@ -1005,7 +995,6 @@ async function refreshWithReveal(){
           throw new Error("Poem has no lines");
         }
 
-        // Try to pick a line that actually contains the keyword. If none do, pick random.
         const matchingLines = lines.filter((line) =>
           line.toLowerCase().includes(keyword.toLowerCase())
         );
@@ -1100,11 +1089,9 @@ if (container && !container.contains(resultShell)) {
 
 
 
-    // Initialize scores + first question
     resetThemeScores();
     renderQuestion();
 
-    // ===== ROLLING PEAR TRANSITION BACK TO HOME (same pattern as other pages) =====
     const pageTransition = document.getElementById("pageTransition");
     const backLink = document.querySelector(".back-link");
 

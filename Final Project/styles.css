@@ -23,7 +23,6 @@
     font: inherit;
   }
 
-  /* Make all form controls inherit the page font */
 input,
 select,
 button,
@@ -32,7 +31,6 @@ option {
   font-family: inherit;
 }
 
-/* Make placeholders also match */
 input::placeholder,
 textarea::placeholder {
   font-family: inherit;

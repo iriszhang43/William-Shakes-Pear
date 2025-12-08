@@ -426,7 +426,6 @@
               Shake for results
             </button>
 
-            <!-- suggestions dropdown -->
             <div class="suggestions" id="suggestions"></div>
           </div>
 
@@ -519,8 +518,7 @@
     const errorMessage = document.getElementById("error-message");
     const suggestionsBox = document.getElementById("suggestions");
 
-    // Cache play text as arrays of lines
-    const PLAY_CACHE = {}; // { playCode: [lines...] }
+    const PLAY_CACHE = {}; 
 
     function normalize(str) {
       return str
@@ -530,10 +528,6 @@
         .trim();
     }
 
-    // Only match whole words (no "be" inside "bed")
-// Only match whole words (no "be" inside "bed")
-// lineText: the sentence from the play
-// queryTokens: array of normalized words from the query
 function lineMatchesQuery(lineText, queryTokens) {
   if (!queryTokens.length) return false;
 
@@ -564,16 +558,13 @@ function lineMatchesQuery(lineText, queryTokens) {
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const html = await response.text();
 
-  // Strip HTML → plain text with original line breaks
   const tmp = document.createElement("div");
   tmp.innerHTML = html;
   let plain = tmp.textContent || tmp.innerText || "";
 
-  // Keep the original line structure first
   const rawLines = plain.split(/\n+/);
 
-  // 1) Rebuild into a single string,
-  //    fixing mid-sentence capitals that come from line breaks.
+  
   let rebuilt = "";
   let lastChar = "";
 
@@ -581,15 +572,11 @@ function lineMatchesQuery(lineText, queryTokens) {
     let line = rawLines[i].trim();
     if (!line) continue;
 
-    // First non-space character of this line
     const firstCharMatch = line.match(/^(\S)(.*)$/);
     if (firstCharMatch) {
       let firstChar = firstCharMatch[1];
       let rest = firstCharMatch[2] || "";
 
-      // If the previous character was NOT end-of-sentence punctuation,
-      // and this line starts with an uppercase letter,
-      // treat it as a mid-sentence and lowercase it.
       if (
         lastChar &&
         !/[.?!:;]/.test(lastChar) &&
@@ -601,21 +588,17 @@ function lineMatchesQuery(lineText, queryTokens) {
       line = firstChar + rest;
     }
 
-    // Add a space if needed between lines
     if (rebuilt && !/\s$/.test(rebuilt)) {
       rebuilt += " ";
     }
     rebuilt += line;
 
-    // update lastChar for the next iteration
     const trimmed = rebuilt.trimEnd();
     lastChar = trimmed.charAt(trimmed.length - 1) || lastChar;
   }
 
-  // 2) Collapse any excessive whitespace
   rebuilt = rebuilt.replace(/\s+/g, " ").trim();
 
-  // 3) Split into sentence-like chunks based on . ? !
   const parts = rebuilt.split(/([.?!])/);
   const sentences = [];
 
@@ -624,7 +607,6 @@ function lineMatchesQuery(lineText, queryTokens) {
     const punct = parts[i + 1] || ""; // ".", "?", "!", or ""
     const sentence = (textPart + punct).trim();
 
-    // Filter out empties and very short fragments
     if (sentence.length >= 30) {
       sentences.push(sentence);
     }
@@ -634,9 +616,6 @@ function lineMatchesQuery(lineText, queryTokens) {
   return sentences;
 }
 
-
-    // Search one play or all plays depending on playCode
-// Search one play or all plays depending on playCode
 async function searchPlay(playCode, query) {
   const normQuery = normalize(query);
   const queryTokens = normQuery.split(" ").filter(Boolean);
@@ -933,7 +912,7 @@ if (pageTransition && backLink) {
     // navigate after animation finishes
     setTimeout(() => {
       window.location.href = href;
-    }, 900); // match animation duration in CSS (0.9s)
+    }, 900); 
   });
 }
 

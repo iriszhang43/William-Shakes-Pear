@@ -84,7 +84,6 @@
   overflow: hidden;
 }
 
-/* the sliding highlight behind the active mode */
 .mode-toggle::before {
   content: "";
   position: absolute;
@@ -98,12 +97,10 @@
   transition: transform 0.25s ease;
 }
 
-/* when compare mode is active, slide the pill to the right */
 .mode-toggle[data-mode="compare"]::before {
   transform: translateX(100%);
 }
 
-/* mode buttons sit at each end & ride on top of the highlight */
 .mode-button {
   position: relative;
   z-index: 1;
@@ -119,7 +116,6 @@
   text-align: center;
 }
 
-/* active mode: stronger text, tiny lift */
 .mode-button.is-active {
   opacity: 1;
 }
@@ -256,7 +252,6 @@
 
     /* ==== SINGLE MODE LEFT: PEAR COUNTER ==== */
 .count-panel {
-  /* no card border/shadow – just simple layout */
   padding: 0.25rem 0.25rem 0.5rem;
 }
 
@@ -289,7 +284,6 @@
   line-height: 1;
 }
 
-/* keep the small text under the pear nicely spaced */
 .count-panel {
   margin-top: 0.3rem;
 }
@@ -373,7 +367,6 @@
   transition: transform 0.25s ease;
 }
 
-/* Play B gets a lighter bar color */
 #bar-b-vert {
   background: #888;
 }
@@ -409,7 +402,6 @@
   margin-top: 3rem;
 }
 
-/* Responsive: stack A · pear · B vertically on small screens */
 @media (max-width: 768px) {
   .compare-main {
     flex-direction: column;
@@ -422,8 +414,6 @@
   }
 }
 
-
-/* compare layout: name + count, with bar below */
 .compare-item {
   margin-bottom: 0.75rem;
 }
@@ -435,7 +425,6 @@
   margin-bottom: 0.2rem;
 }
 
-/* you already have these, but keep them: */
 .compare-bar-track {
   height: 0.4rem;
   border-radius: 999px;
@@ -860,7 +849,6 @@ const topWordsBody = document.getElementById("top-words-body");
 const resultsSingleLayout = document.getElementById("results-single-layout");
 const resultsCompareLayout = document.getElementById("results-compare-layout");
 
-// compare layout elements (vertical bars + labels)
 const compareLabelAMain = document.getElementById("compare-label-a-main");
 const compareLabelBMain = document.getElementById("compare-label-b-main");
 const compareCountAMain = document.getElementById("compare-count-a-main");
@@ -869,7 +857,7 @@ const barAVert = document.getElementById("bar-a-vert");
 const barBVert = document.getElementById("bar-b-vert");
 
 
-    const CONCORDANCE_CACHE = {}; // { playCode: { word: count } }
+    const CONCORDANCE_CACHE = {}; 
 
     function setMode(mode) {
   if (mode === "single") {
@@ -923,7 +911,6 @@ const barBVert = document.getElementById("bar-b-vert");
         const line = rawLine.trim();
         if (!line) continue;
 
-        // Format: "639: The" (count first, then word)
         const match = line.match(/^(\d+):\s+(.+)$/);
         if (!match) continue;
 
@@ -943,7 +930,6 @@ const barBVert = document.getElementById("bar-b-vert");
     }
 
     function getRandomWords(freq, excludeWord, limit = 10) {
-  // Turn freq object into [word, count] pairs
   const entries = Object.entries(freq).filter(([word, count]) => {
     if (!word) return false;
     if (word === excludeWord) return false;
@@ -951,16 +937,13 @@ const barBVert = document.getElementById("bar-b-vert");
     return true;
   });
 
-  // If there are fewer than limit, just return them all
   if (entries.length <= limit) return entries;
 
-  // Fisher–Yates shuffle
   for (let i = entries.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [entries[i], entries[j]] = [entries[j], entries[i]];
   }
 
-  // Take the first `limit` entries as our random suggestions
   return entries.slice(0, limit);
 }
 
@@ -995,7 +978,6 @@ function clearResults() {
   wordExtraAEl.textContent = "";
   topWordsBody.innerHTML = "";
 
-  // default back to single-layout if needed
   if (resultsSingleLayout) {
     resultsSingleLayout.style.display = "grid";
   }
@@ -1056,18 +1038,15 @@ function clearResults() {
       topWordsBody.appendChild(tr);
     });
 
-    // Heading for the suggestion list
     if (topWordsTitle) {
       topWordsTitle.textContent = "You might also want to search for…";
     }
 
-    // Make sure we’re in single layout (not compare layout)
     if (resultsSingleLayout && resultsCompareLayout) {
       resultsSingleLayout.style.display = "grid";
       resultsCompareLayout.style.display = "none";
     }
 
-    // Show the whole results section
     resultsSection.classList.add("is-visible");
   } catch (err) {
     console.error(err);
@@ -1159,7 +1138,6 @@ function clearResults() {
       }
     });
 
-    // ===== ROLLING PEAR TRANSITION BACK TO HOME =====
 const pageTransition = document.getElementById("pageTransition");
 const backLink = document.querySelector(".back-link");
 
@@ -1169,13 +1147,11 @@ if (pageTransition && backLink) {
     const href = backLink.getAttribute("href");
     if (!href) return;
 
-    // show overlay + start rolling animation
     pageTransition.classList.add("is-active");
 
-    // navigate after animation finishes
     setTimeout(() => {
       window.location.href = href;
-    }, 900); // match animation duration in CSS (0.9s)
+    }, 900); 
   });
 }
   </script>

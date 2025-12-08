@@ -16,16 +16,15 @@
     pointer-events: none;
   
     transition: opacity 0.2s ease-out;
-    z-index: 9999; /* above everything else */
+    z-index: 9999; 
   }
   
   .page-transition-pear {
-    width: 75vmax;   /* big enough to cover the whole screen */
+    width: 75vmax;  
     height: auto;
     transform: translateX(100vw) rotate(0deg);
   }
   
-  /* when active, show overlay + animate pear */
   .page-transition.is-active {
     opacity: 1;
     visibility: visible;
@@ -40,7 +39,7 @@
       transform: translateX(100vw) rotate(0deg);
     }
     40% {
-      transform: translateX(0) rotate(-540deg); /* center, covering screen */
+      transform: translateX(0) rotate(-540deg); 
     }
     100% {
       transform: translateX(-100vw) rotate(-1080deg);

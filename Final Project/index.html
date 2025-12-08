@@ -18,7 +18,7 @@
     }
 
     :root{
-  --hero-bg-color: #fff7e0; /* initial hero color */
+  --hero-bg-color: #fff7e0; 
 }
 
     body {
@@ -48,7 +48,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: var(--hero-bg-color); /* solid color, no gradient */
+  background: var(--hero-bg-color); 
   overflow: hidden;
   z-index: 0;
 }
@@ -140,8 +140,8 @@
     /* ====== MAIN CONTENT THAT SCROLLS OVER HERO ====== */
     main {
       position: relative;
-      z-index: 1;           /* on top of the hero */
-      margin-top: 100vh;    /* start right after the hero viewport */
+      z-index: 1;           
+      margin-top: 100vh;    
       background: #f7f5f0;
     }
 
@@ -173,14 +173,14 @@
 /* LEFT: image column */
 .about-illustration {
   flex: 0 0 auto;
-  max-width: 280px;      /* tweak size as you like */
+  max-width: 280px;      
 }
 
 .about-illustration img {
   width: 100%;
   height: auto;
   display: block;
-  cursor: pointer;       /* because hover does something */
+  cursor: pointer;     
 }
 
 /* RIGHT: text column */
@@ -226,11 +226,8 @@
   max-width: 500px;
   
 
-  /* give the card space to slide left/right without being cut */
   padding: 0 1rem;
   margin: 0 1rem;
-  /* important: no overflow hidden here */
-  /* overflow: visible;  (default, so you can omit this) */
 }
 
 .toc-card-title{
@@ -241,7 +238,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: 0;             /* default: image on the right */
+  right: 0;            
   height: 100%;
   width: auto;
   object-fit: cover;
@@ -335,8 +332,8 @@
         padding-bottom: 3rem;
       }
       .toc-card {
-    flex: 1 1 260px;             /* allow a single card to stretch a bit */
-    max-width: 340px;            /* prevents it from being *too* wide */
+    flex: 1 1 260px;            
+    max-width: 340px;          
   }
     }
   </style>
@@ -472,7 +469,6 @@
   </main>
 
   <script>
-    // Smooth scroll for the "Enter the pearverse" button
     document.addEventListener("DOMContentLoaded", function () {
       const scrollBtn = document.querySelector(".hero-scroll");
       if (scrollBtn) {
@@ -502,7 +498,6 @@
   if (pearContainer && heroSection) {
     pearContainer.addEventListener("click", () => {
       heroColorIndex = (heroColorIndex + 1) % heroColors.length;
-      // update the CSS variable so CSS stays in control of background
       document.documentElement.style.setProperty(
         "--hero-bg-color",
         heroColors[heroColorIndex]
@@ -605,18 +600,16 @@
 
       // continuous idle loop
       setInterval(() => {
-        if (aboutHovering) return;           // don't change while hovered
+        if (aboutHovering) return;           
         aboutFrameIndex = (aboutFrameIndex + 1) % aboutFrames.length;
         aboutPear.src = aboutFrames[aboutFrameIndex];
-      }, 220); // ~4.5 fps, tweak as you like
+      }, 220); 
 
-      // hover: swap to hover image and pause loop
       aboutPear.addEventListener("mouseenter", () => {
         aboutHovering = true;
         aboutPear.src = hoverSrc;
       });
 
-      // un-hover: resume idle loop from current frame index
       aboutPear.addEventListener("mouseleave", () => {
         aboutHovering = false;
         aboutPear.src = aboutFrames[aboutFrameIndex];
