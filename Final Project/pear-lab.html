@@ -344,17 +344,15 @@
     }
 
 
-    /* ===== FULLSCREEN REVEAL (loading -> zoom -> result stage) ===== */
 :root{
   --reveal-bg: #f7f5f0;
 }
 
 .back-link{
   position: relative;
-  z-index: 9999; /* keep visible over reveal */
+  z-index: 9999; 
 }
 
-/* full-screen overlay */
 .reveal {
   position: fixed;
   inset: 0;
@@ -365,39 +363,34 @@
 }
 
 .reveal.is-visible{
-  display: flex;              /* override grid */
+  display: flex;             
   flex-direction: column;
-  justify-content: center;    /* vertical center */
-  align-items: center;        /* horizontal center */
-  gap: 0.4rem;                /* controls distance between pear + text */
+  justify-content: center;   
+  align-items: center;     
+  gap: 0.4rem;            
 }
 
-/* bring the loading text closer */
 .reveal-loading-text{
-  margin-top: 0;              /* kill extra spacing */
+  margin-top: 0;              
   line-height: 1.2;
 }
 
-/* optional: slightly tighter on small screens */
 @media (max-width: 480px){
   .reveal.is-visible{ gap: 0.3rem; }
 }
 
-/* tiny fade when text changes */
 .reveal-loading-text.is-fading{
   opacity: 0;
   transform: translateY(2px);
   transition: opacity 160ms ease, transform 160ms ease;
 }
 
-/* center pear (loading) */
 .reveal-pear {
   width: 140px;
   height: auto;
   transform-origin: center;
 }
 
-/* shake animation while loading */
 @keyframes pearShake {
   0%   { transform: translateX(0) rotate(0deg) scale(1); }
   20%  { transform: translateX(-6px) rotate(-6deg) scale(1); }
@@ -410,7 +403,6 @@
   animation: pearShake 0.55s ease-in-out infinite;
 }
 
-/* zoom moment */
 @keyframes pearZoom {
   0%   { transform: scale(1); }
   100% { transform: scale(18); }
@@ -419,13 +411,11 @@
   animation: pearZoom 0.35s ease-in forwards;
 }
 
-/* result stage: show content, hide pear */
 .reveal.is-result .reveal-pear {
   opacity: 1;
   pointer-events: none;
 }
 
-/* centered result content on overlay */
 .reveal-result {
   position: relative;
   z-index: 2;
@@ -437,14 +427,12 @@
   display: block;
 }
 
-/* make the result card feel at home on solid bg */
 .reveal-result .result-shell {
-  display: block; /* force visible inside reveal */
+  display: block; 
   background: rgba(255, 253, 248, 0.92);
   backdrop-filter: blur(6px);
 }
 
-    /* Side panel pear illustration (optional) */
     .lab-side {
       display: flex;
       flex-direction: column;
@@ -559,14 +547,11 @@
 </div>
 
 
-  <!-- result content mounts here after zoom -->
   <div class="reveal-result" id="revealResult">
-    <!-- we will move result-shell into here -->
   </div>
 </div>
 
 
-  <!-- page transition overlay (same pattern as other pages) -->
   <div class="page-transition" id="pageTransition">
     <img
       src="illustration/pearicon.png"
@@ -577,7 +562,6 @@
 
   <script>
     // ===== QUIZ DATA =====
-    // Hidden "themes" to send as keywords to PoetryDB
     const THEMES = ["love", "night", "sea", "storm"];
 
     // Five questions – each answer secretly pushes a theme
@@ -654,7 +638,6 @@
   storm: "#fff7e0",
 };
 
-// keep loading pear as ONE image
 const LOADING_PEAR_SRC = "illustration/pearicon.png";
 
 // result pear = animated frames per theme
@@ -690,7 +673,6 @@ function startResultPearAnimation(theme){
   resultPearFrameIndex = 0;
   revealPear.src = frames[0];
 
-  // optional: preload to reduce flicker
   frames.forEach((src) => { const img = new Image(); img.src = src; });
 
   // loop frames
@@ -721,7 +703,6 @@ function stopLoadingColorCycle(){
   }
 }
 
-// fun loading lines (rotates while shaking)
 const LOADING_LINES = [
   "Shaking the poetry tree…",
   "One sec — pear-fection takes time.",
@@ -746,7 +727,6 @@ function startLoadingTextCycle(){
 
     loadingTextIndex = (loadingTextIndex + 1) % LOADING_LINES.length;
 
-    // quick fade out -> swap -> fade in
     revealLoadingText.classList.add("is-fading");
     setTimeout(() => {
       revealLoadingText.textContent = LOADING_LINES[loadingTextIndex];
@@ -906,7 +886,6 @@ function showRevealLoading(theme){
   reveal.classList.add("is-visible", "is-loading");
   reveal.classList.remove("is-zooming", "is-result");
 
-  // ✅ loading state: stop result animation + use single pear
   stopResultPearAnimation();
   if (revealPear) revealPear.src = LOADING_PEAR_SRC;
 
@@ -944,7 +923,6 @@ async function runRevealToResult(theme){
     revealResult.appendChild(resultShell);
   }
 
-  // ✅ result state: animate themed pear frames
   startResultPearAnimation(theme);
 }
 
@@ -980,17 +958,13 @@ async function refreshWithReveal(){
 
   let s = String(line);
 
-  // remove markdown-ish underscores (_both_)
   s = s.replace(/_/g, "");
 
-  // normalize whitespace
   s = s.replace(/\s+/g, " ").trim();
 
-  // remove weird trailing combos like "....)" or "…)" or "...)"
   s = s.replace(/(\.{2,}|…)\s*[\)\]\}]+$/g, "");
   s = s.replace(/[\)\]\}]+$/g, ""); // stray closing bracket at end
 
-  // if more closing parens than opening, strip ALL ')' as a cleanup
   const opens = (s.match(/\(/g) || []).length;
   const closes = (s.match(/\)/g) || []).length;
   if (closes > opens) s = s.replace(/\)/g, "");
