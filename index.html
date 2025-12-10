@@ -272,7 +272,6 @@
   transform: translateX(3.5rem);
 }
 
-/* existing typography */
 .toc-card-title {
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -291,7 +290,6 @@
   .hero-content {
     padding-bottom: 3rem;
   }
-
   .about-layout {
     flex-direction: column;
     text-align: center;
@@ -304,6 +302,10 @@
   .toc-item {
     flex: 1 1 260px;
     max-width: 340px;
+  }
+  .toc-card {
+    flex: 1 1 260px;            
+    max-width: 340px;          
   }
 }
 
@@ -323,19 +325,60 @@
       opacity: 0.9;
     }
 
-    @media (max-width: 600px) {
-      .section {
-        padding: 3rem 1.25rem;
-      }
+@media (max-width: 700px) {
+  .hero-nav {
+    top: 1.25rem;
+    left: 1.25rem;
+    right: 1.25rem;
+    transform: none;
+    width: auto;
 
-      .hero-content {
-        padding-bottom: 3rem;
-      }
-      .toc-card {
-    flex: 1 1 260px;            
-    max-width: 340px;          
+    display: block;
+    z-index: 50;
   }
-    }
+
+  .hero-nav::before {
+    content: "Menu";
+    display: inline-block;
+
+    opacity: 0.75;
+    padding-bottom: 0.15rem;
+    border-bottom: 1px solid transparent;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
+  }
+
+  .hero-nav:hover::before,
+  .hero-nav:focus-within::before {
+    opacity: 1;
+    border-bottom-color: #111; 
+  }
+
+  .hero-nav a {
+    display: none;
+    opacity: 0.75;
+    padding-bottom: 0.15rem;
+    border-bottom: 1px solid transparent;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
+    padding-top: 0.65rem; 
+    width: fit-content;  
+  }
+
+  .hero-nav:hover a,
+  .hero-nav:focus-within a {
+    display: block;
+  }
+
+  .hero-nav a:hover {
+    opacity: 1;
+    border-bottom-color: #111;
+  }
+
+  .hero-nav:hover a:first-of-type,
+  .hero-nav:focus-within a:first-of-type {
+    margin-top: 0.4rem;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -387,10 +430,7 @@
         <div class="about-copy">
           <h2>Welcome to William Shakes Pear</h2>
           <p>
-            This website is a UX experiment that blends Shakespeare’s universe
-            with a single, very confused pear. Explore plays, poems, and sonnets;
-            search for lines and words; and see how far one fruit can go in the
-            world of classic literature.
+            Welcome to a UX experiment where Shakespeare’s plays collide with a very confused pear. Browse the plays, search for lines and words, and visit Pearlab to unlock a personalized ex-pear-ience as you wander deeper into the pearverse.
           </p>
         </div>
       </div>
@@ -412,8 +452,7 @@
             <a href="catalogue.html" class="toc-card">
               <div class="toc-card-title">Catalogue</div>
               <div class="toc-card-desc">
-                Browse all plays, poems, and sonnets with summaries and filters
-                for type, genre, and chronology.
+                Browse Shakespeare’s full play catalogue—Comedy, Tragedy, History, and Romance—with quick filters and short synopses for each.
               </div>
             </a>
           </div>
@@ -427,8 +466,7 @@
             <a href="find-line.html" class="toc-card">
               <div class="toc-card-title">Find the Line</div>
               <div class="toc-card-desc">
-                Paste a line of Shakespeare and discover which work it’s from,
-                who said it, and where it appears.
+                Type or paste a line and track it down in the plays. See where it appears, with nearby context to help confirm you’ve got the right match.
               </div>
             </a>
           </div>
@@ -442,8 +480,7 @@
             <a href="word-frequency.html" class="toc-card">
               <div class="toc-card-title">Word Frequency</div>
               <div class="toc-card-desc">
-                Type a word to see how often it appears across Shakespeare’s
-                works, and which characters love it most.
+                Explore how often a word shows up in a single play, or compare its frequency between two plays to see where it really dominates.
               </div>
             </a>
           </div>
@@ -457,8 +494,7 @@
             <a href="pear-lab.html" class="toc-card">
               <div class="toc-card-title">Pear Lab</div>
               <div class="toc-card-desc">
-                A playful corner for random pear facts, generated scripts, and
-                other experiments that may or may not make sense.
+                A playful corner to get your own personalized “Pearline” – a one-of-a-kind quote that captures your pear vibe in the pearverse.
               </div>
             </a>
           </div>
