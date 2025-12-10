@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pear Lab · William Shakes Pear</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="https://use.typekit.net/nmx3jjw.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pagetransition.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "phoreuscherokee", serif;
+      font-weight: 400;
+      background: #f7f5f0;
+      color: #1f1f1f;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 3rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .back-link {
+      font-size: 0.85rem;
+      opacity: 0.75;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .back-link:hover {
+      opacity: 1;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.6rem);
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      max-width: 540px;
+    }
+
+    /* ===== LAB LAYOUT ===== */
+    .lab-shell{
+  flex: 1;
+  display: flex;
+  justify-content: center; 
+  align-items: center;   
+  padding-top: 0rem;
+}
+
+.lab-shell > div{
+  width: 100%;
+  max-width: 720px;       
+}
+
+    @media (max-width: 800px) {
+      .lab-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== QUIZ ===== */
+    .quiz-shell {
+      background: #fffdf8;
+      border-radius: 16px;
+      padding: 1.4rem 1.5rem 1.6rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .quiz-shell h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .quiz-question-text {
+      font-size: 1rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      margin-bottom: 1rem;
+    }
+
+    .quiz-option {
+      text-align: left;
+      border-radius: 999px;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+    }
+
+    .quiz-option:hover {
+      background: #f7f2ea;
+    }
+
+    .quiz-option span.quiz-option-label {
+      flex: 1;
+    }
+
+    .quiz-option-badge {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      white-space: nowrap;
+    }
+
+    .quiz-option--selected {
+      border-color: #111;
+      background: #f0ebe1;
+      transform: translateY(-1px);
+    }
+
+    .quiz-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .quiz-progress {
+      font-size: 0.85rem;
+      opacity: 0.75;
+    }
+
+    .quiz-dots {
+      display: inline-flex;
+      gap: 0.25rem;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+
+    .quiz-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .quiz-dot.is-active {
+      background: #111;
+    }
+
+    .quiz-next-button {
+      border-radius: 999px;
+      border: none;
+      padding: 0.65rem 1.4rem;
+      background: #111;
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .quiz-next-button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .quiz-next-button:not(:disabled):hover {
+      opacity: 0.9;
+    }
+
+    .quiz-note {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.3rem;
+    }
+
+    /* ===== RESULT CARD ===== */
+    .result-shell {
+      background: #fffdf8;
+      border-radius: 16px;
+      padding: 1.3rem 1.4rem 1.5rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      display: none;
+    }
+
+    .result-shell.is-visible {
+      display: block;
+    }
+
+    .result-tag {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+      margin-bottom: 0.3rem;
+    }
+
+    .result-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .result-keyword {
+      font-weight: 600;
+    }
+
+    .result-line {
+      font-size: 1.05rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .result-line mark {
+      background: #ffe9a9;
+      padding: 0 0.1rem;
+    }
+
+    .result-meta {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-bottom: 0.7rem;
+    }
+
+    .result-explainer {
+      font-size: 0.83rem;
+      opacity: 0.8;
+      margin-bottom: 0.9rem;
+    }
+
+.result-actions{
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+.result-actions .result-button{
+  border-radius: 999px;
+  border: none;
+  padding: 0.65rem 1.4rem;
+  background: #111;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.result-actions .result-button:hover{
+  opacity: 0.9;
+}
+
+.result-shell{
+  position: relative;
+}
+
+.result-pearmore{
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.18);
+  background: #fff;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.result-pearmore:hover{
+  background: #f7f2ea;
+}
+
+.result-actions{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+.result-actions .result-button{
+  border-radius: 999px;
+  border: none;
+  padding: 0.65rem 1.4rem;
+  background: #111;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.result-actions .result-button:hover{
+  opacity: 0.9;
+}
+
+
+    .result-error {
+      font-size: 0.85rem;
+      color: #a02222;
+      margin-top: 0.4rem;
+    }
+
+    .result-loading {
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-top: 0.3rem;
+    }
+
+
+:root{
+  --reveal-bg: #f7f5f0;
+}
+
+.back-link{
+  position: relative;
+  z-index: 9999; 
+}
+
+.reveal {
+  position: fixed;
+  inset: 0;
+  background: var(--reveal-bg);
+  display: none;
+  z-index: 9998;
+  transition: background 220ms ease;
+}
+
+.reveal.is-visible{
+  display: flex;             
+  flex-direction: column;
+  justify-content: center;   
+  align-items: center;     
+  gap: 0.4rem;            
+}
+
+.reveal-loading-text{
+  margin-top: 0;              
+  line-height: 1.2;
+}
+
+@media (max-width: 480px){
+  .reveal.is-visible{ gap: 0.3rem; }
+}
+
+.reveal-loading-text.is-fading{
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.reveal-pear {
+  width: 140px;
+  height: auto;
+  transform-origin: center;
+}
+
+@keyframes pearShake {
+  0%   { transform: translateX(0) rotate(0deg) scale(1); }
+  20%  { transform: translateX(-6px) rotate(-6deg) scale(1); }
+  40%  { transform: translateX(6px) rotate(6deg) scale(1); }
+  60%  { transform: translateX(-4px) rotate(-4deg) scale(1); }
+  80%  { transform: translateX(4px) rotate(4deg) scale(1); }
+  100% { transform: translateX(0) rotate(0deg) scale(1); }
+}
+.reveal.is-loading .reveal-pear {
+  animation: pearShake 0.55s ease-in-out infinite;
+}
+
+@keyframes pearZoom {
+  0%   { transform: scale(1); }
+  100% { transform: scale(18); }
+}
+.reveal.is-zooming .reveal-pear {
+  animation: pearZoom 0.35s ease-in forwards;
+}
+
+.reveal.is-result .reveal-pear {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.reveal-result {
+  position: relative;
+  z-index: 2;
+  width: min(720px, calc(100% - 3rem));
+  display: none;
+}
+
+.reveal.is-result .reveal-result {
+  display: block;
+}
+
+.reveal-result .result-shell {
+  display: block; 
+  background: rgba(255, 253, 248, 0.92);
+  backdrop-filter: blur(6px);
+}
+
+    .lab-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .lab-pear-wrap {
+      width: 200px;
+      max-width: 70%;
+    }
+
+    .lab-pear-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .lab-side-text {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      text-align: center;
+      max-width: 260px;
+    }
+
+    @media (max-width: 800px) {
+      .lab-side {
+        order: -1;
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <a href="index.html" class="back-link">← Back to home</a>
+      <h1>Pear Lab</h1>
+      <p class="subtitle">
+        Answer a few questions and we’ll fetch a line of poetry that matches
+        your pear-sonality. 
+      </p>
+    </header>
+
+    <section class="lab-shell">
+      <!-- LEFT: quiz -->
+      <div>
+        <div class="quiz-shell" id="quiz-shell">
+          <h2>What kind of pear are you today?</h2>
+          <div class="quiz-question-text" id="quiz-question-text"></div>
+
+          <div class="quiz-options" id="quiz-options"></div>
+
+          <div class="quiz-footer">
+            <div class="quiz-progress">
+              <span id="quiz-progress-text"></span>
+              <span class="quiz-dots" id="quiz-dots"></span>
+            </div>
+            <button
+              type="button"
+              class="quiz-next-button"
+              id="quiz-next-button"
+              disabled
+            >
+              Next →
+            </button>
+          </div>
+
+          <div class="quiz-note">
+            Don't overthink! Just go with your pear instincts.
+          </div>
+        </div>
+
+        <!-- RESULT CARD -->
+        <div class="result-shell" id="result-shell">
+          <div class="result-tag">Your pear-vibe poem</div>
+          <div class="result-title" id="result-title"></div>
+          <div class="result-line" id="result-line"></div>
+          <div class="result-meta" id="result-meta"></div>
+          <div class="result-explainer" id="result-explainer"></div>
+
+<!-- Pear me again: top-right light -->
+<button type="button" class="result-pearmore" id="result-refresh">
+  Another pear line
+</button>
+
+<!-- Restart: bottom dark -->
+<div class="result-actions">
+  <button type="button" class="result-button" id="result-restart">
+    Restart
+  </button>
+</div>
+
+
+          <div class="result-error" id="result-error" style="display:none;"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- FULLSCREEN REVEAL OVERLAY -->
+<div class="reveal" id="reveal">
+  <img
+  src="illustration/pearicon.png"
+  alt="Loading pear"
+  class="reveal-pear"
+  id="revealPear"
+/>
+
+<div class="reveal-loading-text" id="revealLoadingText">
+  Shaking the poetry tree…
+</div>
+
+
+  <div class="reveal-result" id="revealResult">
+  </div>
+</div>
+
+
+  <div class="page-transition" id="pageTransition">
+    <img
+      src="illustration/pearicon.png"
+      alt="Rolling pear transition"
+      class="page-transition-pear"
+    />
+  </div>
+
+  <script>
+    // ===== QUIZ DATA =====
+    const THEMES = ["love", "night", "sea", "storm"];
+
+    const QUESTIONS = [
+      {
+        text: "Pick today’s pear mood:",
+        options: [
+          { label: "Soft, golden, and a little sentimental", theme: "love" },
+          { label: "Quiet and thoughtful, half in shadow", theme: "night" },
+          { label: "Salty, windswept, staring at the horizon", theme: "sea" },
+          { label: "Crackling with energy and chaos", theme: "storm" },
+        ],
+      },
+      {
+        text: "Where are you eating this pear?",
+        options: [
+          { label: "On a balcony with someone I like", theme: "love" },
+          { label: "Under a lantern, everyone else asleep", theme: "night" },
+          { label: "On a pier, listening to waves slap the posts", theme: "sea" },
+          { label: "By a window while the sky goes wild", theme: "storm" },
+        ],
+      },
+      {
+        text: "What does the first bite feel like?",
+        options: [
+          { label: "Warm, familiar, like a memory arriving", theme: "love" },
+          { label: "A hush, where everything else fades out", theme: "night" },
+          { label: "A spray of salt and wind in your chest", theme: "sea" },
+          { label: "Electric, like thunder in your teeth", theme: "storm" },
+        ],
+      },
+      {
+        text: "Pick a soundtrack for your pear:",
+        options: [
+          { label: "A slow song that almost hurts", theme: "love" },
+          { label: "A quiet piano in another room", theme: "night" },
+          { label: "Distant gulls and a creaking boat", theme: "sea" },
+          { label: "Drums and a storm rolling in", theme: "storm" },
+        ],
+      },
+      {
+        text: "What should the poem do for you right now?",
+        options: [
+          { label: "Remind me that I’m loved", theme: "love" },
+          { label: "Let me sit with my thoughts", theme: "night" },
+          { label: "Make me feel small in a good way", theme: "sea" },
+          { label: "Shake me out of this moment", theme: "storm" },
+        ],
+      },
+    ];
+
+    const THEME_TITLES = {
+      love: "Soft-hearted Pear",
+      night: "Midnight Pear",
+      sea: "Sea-swept Pear",
+      storm: "Storm-charged Pear",
+    };
+
+    const THEME_EXPLANATIONS = {
+      love:
+        "You kept choosing warmth, connection, and familiar sweetness. We asked the poetry API for lines with “love” to match that softness.",
+      night:
+        "You leaned toward quiet, introspective moods and late-hour vibes. We searched for lines containing “night” to echo that stillness.",
+      sea:
+        "You gravitated to distance, horizon, and wide open air, so we looked for poems that mention the “sea” to match that feeling.",
+      storm:
+        "You kept picking energy and disruption. We asked for lines with “storm” to mirror that restless, charged mood.",
+    };
+
+    const THEME_BG = {
+  love:  "#ffe5ec",
+  night: "#e2f0ff",
+  sea:   "#e8f7e0",
+  storm: "#fff7e0",
+};
+
+const LOADING_PEAR_SRC = "illustration/pearicon.png";
+
+// result pear = animated frames per theme
+const THEME_PEAR_FRAMES = {
+  love:  ["illustration/love1.png",  "illustration/love2.png",  "illustration/love3.png"],
+  night: ["illustration/night1.png", "illustration/night2.png", "illustration/night3.png"],
+  sea:   ["illustration/sea1.png",   "illustration/sea2.png",   "illustration/sea3.png"],
+  storm: ["illustration/storm1.png", "illustration/storm2.png", "illustration/storm3.png"],
+};
+
+
+const LOADING_COLORS = ["#fff7e0", "#ffe5ec", "#e2f0ff", "#e8f7e0"];
+let loadingColorTimer = null;
+let loadingColorIndex = 0;
+
+let resultPearTimer = null;
+let resultPearFrameIndex = 0;
+
+function stopResultPearAnimation(){
+  if (resultPearTimer) {
+    clearInterval(resultPearTimer);
+    resultPearTimer = null;
+  }
+}
+
+function startResultPearAnimation(theme){
+  stopResultPearAnimation();
+
+  const frames = THEME_PEAR_FRAMES[theme];
+  if (!revealPear || !frames || !frames.length) return;
+
+  // start from first frame
+  resultPearFrameIndex = 0;
+  revealPear.src = frames[0];
+
+  frames.forEach((src) => { const img = new Image(); img.src = src; });
+
+  // loop frames
+  resultPearTimer = setInterval(() => {
+    resultPearFrameIndex = (resultPearFrameIndex + 1) % frames.length;
+    revealPear.src = frames[resultPearFrameIndex];
+  }, 220); 
+}
+
+
+function startLoadingColorCycle(){
+  stopLoadingColorCycle();
+  loadingColorIndex = 0;
+
+  loadingColorTimer = setInterval(() => {
+    loadingColorIndex = (loadingColorIndex + 1) % LOADING_COLORS.length;
+    document.documentElement.style.setProperty(
+      "--reveal-bg",
+      LOADING_COLORS[loadingColorIndex]
+    );
+  }, 240); 
+}
+
+function stopLoadingColorCycle(){
+  if (loadingColorTimer) {
+    clearInterval(loadingColorTimer);
+    loadingColorTimer = null;
+  }
+}
+
+const LOADING_LINES = [
+  "Shaking the poetry tree…",
+  "One sec — pear-fection takes time.",
+  "Brewing a fresh line…",
+  "Consulting the pear-oracle…",
+  "Dusting off the sonnets…",
+  "Almost ripe…",
+  "Finding your pear-sonal verse…",
+];
+
+let loadingTextTimer = null;
+let loadingTextIndex = 0;
+const revealLoadingText = document.getElementById("revealLoadingText");
+
+function startLoadingTextCycle(){
+  stopLoadingTextCycle();
+  loadingTextIndex = 0;
+  if (revealLoadingText) revealLoadingText.textContent = LOADING_LINES[0];
+
+  loadingTextTimer = setInterval(() => {
+    if (!revealLoadingText) return;
+
+    loadingTextIndex = (loadingTextIndex + 1) % LOADING_LINES.length;
+
+    revealLoadingText.classList.add("is-fading");
+    setTimeout(() => {
+      revealLoadingText.textContent = LOADING_LINES[loadingTextIndex];
+      revealLoadingText.classList.remove("is-fading");
+    }, 170);
+  }, 1100); // speed of message change
+}
+
+function stopLoadingTextCycle(){
+  if (loadingTextTimer) {
+    clearInterval(loadingTextTimer);
+    loadingTextTimer = null;
+  }
+}
+
+
+    // ===== DOM ELEMENTS =====
+    const quizShell = document.getElementById("quiz-shell");
+    const quizQuestionText = document.getElementById("quiz-question-text");
+    const quizOptionsEl = document.getElementById("quiz-options");
+    const quizNextButton = document.getElementById("quiz-next-button");
+    const quizProgressText = document.getElementById("quiz-progress-text");
+    const quizDots = document.getElementById("quiz-dots");
+
+    const resultShell = document.getElementById("result-shell");
+    const resultTitle = document.getElementById("result-title");
+    const resultLineEl = document.getElementById("result-line");
+    const resultMeta = document.getElementById("result-meta");
+    const resultExplainer = document.getElementById("result-explainer");
+    const resultError = document.getElementById("result-error");
+
+    const resultRefreshBtn = document.getElementById("result-refresh");
+    const resultRestartBtn = document.getElementById("result-restart");
+
+    const reveal = document.getElementById("reveal");
+const revealResult = document.getElementById("revealResult");
+const revealPear = document.getElementById("revealPear");
+
+
+
+    // ===== QUIZ STATE =====
+    let currentQuestionIndex = 0;
+    let selectedThemeForQuestion = null;
+    let themeScores = {};
+    let finalTheme = null;
+
+    let lastPoem = null;
+    let lastKeyword = null;
+
+    function resetThemeScores() {
+      themeScores = {};
+      THEMES.forEach((t) => (themeScores[t] = 0));
+    }
+
+    function renderProgress() {
+      const total = QUESTIONS.length;
+      const current = currentQuestionIndex + 1;
+      quizProgressText.textContent = `Question ${current} of ${total}`;
+
+      quizDots.innerHTML = "";
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement("span");
+        dot.className = "quiz-dot";
+        if (i === currentQuestionIndex) {
+          dot.classList.add("is-active");
+        }
+        quizDots.appendChild(dot);
+      }
+    }
+
+    function renderQuestion() {
+      const q = QUESTIONS[currentQuestionIndex];
+      selectedThemeForQuestion = null;
+
+      quizQuestionText.textContent = q.text;
+      quizOptionsEl.innerHTML = "";
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "quiz-option";
+
+        const labelSpan = document.createElement("span");
+        labelSpan.className = "quiz-option-label";
+        labelSpan.textContent = opt.label;
+
+        const badgeSpan = document.createElement("span");
+        badgeSpan.className = "quiz-option-badge";
+        badgeSpan.textContent = `Choice ${index + 1}`;
+
+        btn.appendChild(labelSpan);
+        btn.appendChild(badgeSpan);
+
+        btn.addEventListener("click", () => {
+          // clear previous selection
+          document
+            .querySelectorAll(".quiz-option")
+            .forEach((el) => el.classList.remove("quiz-option--selected"));
+          btn.classList.add("quiz-option--selected");
+          selectedThemeForQuestion = opt.theme;
+          quizNextButton.disabled = false;
+        });
+
+        quizOptionsEl.appendChild(btn);
+      });
+
+      quizNextButton.disabled = true;
+      renderProgress();
+    }
+
+    function goToNextQuestion() {
+      if (!selectedThemeForQuestion) return;
+
+      // Increment score for the chosen theme
+      themeScores[selectedThemeForQuestion] =
+        (themeScores[selectedThemeForQuestion] || 0) + 1;
+
+      if (currentQuestionIndex < QUESTIONS.length - 1) {
+        currentQuestionIndex += 1;
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function getWinningTheme() {
+      let bestTheme = THEMES[0];
+      let bestScore = -1;
+
+      Object.entries(themeScores).forEach(([theme, score]) => {
+        if (score > bestScore) {
+          bestScore = score;
+          bestTheme = theme;
+        }
+      });
+
+      return bestTheme;
+    }
+
+    async function finishQuiz() {
+  finalTheme = getWinningTheme();
+  lastKeyword = finalTheme;
+
+  // show fullscreen loading state immediately
+  showRevealLoading(finalTheme);
+
+  await fetchPoetryForTheme(finalTheme);
+
+  // after fetch completes, do zoom + reveal result
+  await runRevealToResult(finalTheme);
+}
+
+
+function showRevealLoading(theme){
+  reveal.classList.add("is-visible", "is-loading");
+  reveal.classList.remove("is-zooming", "is-result");
+
+  stopResultPearAnimation();
+  if (revealPear) revealPear.src = LOADING_PEAR_SRC;
+
+  document.documentElement.style.setProperty("--reveal-bg", LOADING_COLORS[0]);
+  startLoadingColorCycle();
+
+  if (revealLoadingText) revealLoadingText.style.display = "block";
+  if (revealLoadingText) revealLoadingText.classList.remove("is-fading");
+  startLoadingTextCycle();
+
+  quizShell.style.display = "none";
+  resultShell.classList.remove("is-visible");
+}
+
+
+
+
+async function runRevealToResult(theme){
+  stopLoadingTextCycle();
+  if (revealLoadingText) revealLoadingText.style.display = "none";
+
+  stopLoadingColorCycle();
+  const bg = THEME_BG[theme] || "#f7f5f0";
+  document.documentElement.style.setProperty("--reveal-bg", bg);
+
+  reveal.classList.remove("is-loading");
+  reveal.classList.add("is-zooming");
+
+  await new Promise((r) => setTimeout(r, 380));
+
+  reveal.classList.remove("is-zooming");
+  reveal.classList.add("is-result");
+
+  if (!revealResult.contains(resultShell)) {
+    revealResult.appendChild(resultShell);
+  }
+
+  startResultPearAnimation(theme);
+}
+
+
+
+
+
+async function refreshWithReveal(){
+  if (!finalTheme) return;
+
+  // if they’re already on the result screen, go back to loading state
+  showRevealLoading(finalTheme);
+
+  await fetchPoetryForTheme(finalTheme);
+
+  // do the same zoom -> result reveal again
+  await runRevealToResult(finalTheme);
+}
+
+
+
+    // ===== API + RESULT RENDERING =====
+    function highlightKeyword(line, keyword) {
+      if (!keyword) return line;
+
+      const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp("\\b" + escaped + "\\b", "gi");
+      return line.replace(regex, (m) => `<mark>${m}</mark>`);
+    }
+    
+    function cleanPoetryLine(line) {
+  if (!line) return "";
+
+  let s = String(line);
+
+  s = s.replace(/_/g, "");
+
+  s = s.replace(/\s+/g, " ").trim();
+
+  s = s.replace(/(\.{2,}|…)\s*[\)\]\}]+$/g, "");
+  s = s.replace(/[\)\]\}]+$/g, ""); 
+
+  const opens = (s.match(/\(/g) || []).length;
+  const closes = (s.match(/\)/g) || []).length;
+  if (closes > opens) s = s.replace(/\)/g, "");
+
+  return s.trim();
+}
+
+
+    async function fetchPoetryForTheme(theme) {
+      resultError.style.display = "none";
+      resultError.textContent = "";
+      resultLineEl.innerHTML = "";
+      resultMeta.textContent = "";
+      resultExplainer.textContent = "";
+      lastPoem = null;
+
+      const keyword = theme; 
+      const url = `https://poetrydb.org/lines/${encodeURIComponent(
+        keyword
+      )}/title,author,lines`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+        if (!Array.isArray(data) || data.length === 0) {
+          throw new Error("No poems returned");
+        }
+
+        // Pick a random poem from those returned
+        const poem = data[Math.floor(Math.random() * data.length)];
+        const lines = Array.isArray(poem.lines) ? poem.lines : [];
+
+        if (!lines.length) {
+          throw new Error("Poem has no lines");
+        }
+
+        const matchingLines = lines.filter((line) =>
+          line.toLowerCase().includes(keyword.toLowerCase())
+        );
+        const chosenLine = (matchingLines.length
+          ? matchingLines
+          : lines
+        )[Math.floor(Math.random() * (matchingLines.length || lines.length))];
+
+        lastPoem = poem;
+
+        // Render
+        const moodTitle = THEME_TITLES[theme] || "Your pear mood";
+        resultTitle.textContent = moodTitle;
+        const cleanedLine = cleanPoetryLine(chosenLine);
+resultLineEl.innerHTML = "“" + highlightKeyword(cleanedLine, keyword) + "”";
+
+        const author = poem.author || "Unknown author";
+        const title = poem.title || "Untitled";
+        resultMeta.textContent = `${title} · ${author}`;
+
+        const explainer =
+          THEME_EXPLANATIONS[theme] ||
+          "We looked up a poem that shared this theme and picked a line that felt right.";
+        resultExplainer.textContent = explainer;
+
+      } catch (err) {
+  console.error(err);
+
+  // end loading + show result stage anyway with an error message
+  resultError.style.display = "block";
+  resultError.textContent =
+    "We couldn’t reach the PoetryDB API just now. Try again.";
+
+  // still reveal the result UI so user isn’t stuck on loading
+} finally {
+  // no resultLoading now
+}
+
+    }
+
+    function restartQuiz() {
+      stopResultPearAnimation();
+
+      stopLoadingColorCycle();
+
+      stopLoadingTextCycle();
+if (revealLoadingText) revealLoadingText.style.display = "";
+
+
+      currentQuestionIndex = 0;
+      selectedThemeForQuestion = null;
+      finalTheme = null;
+      lastPoem = null;
+      lastKeyword = null;
+      resetThemeScores();
+
+      resultShell.classList.remove("is-visible");
+      quizShell.style.display = "block";
+
+      // hide reveal overlay + put result card back in normal flow
+reveal.classList.remove("is-visible", "is-loading", "is-zooming", "is-result");
+
+// move result card back under the quiz container (original place)
+const container = document.querySelector(".lab-shell > div");
+if (container && !container.contains(resultShell)) {
+  container.appendChild(resultShell);
+}
+
+
+      renderQuestion();
+    }
+
+    // ===== EVENT WIRING =====
+    quizNextButton.addEventListener("click", goToNextQuestion);
+
+    resultRefreshBtn.addEventListener("click", async () => {
+  if (!finalTheme) return;
+
+  // replay the reveal loading sequence
+  showRevealLoading(finalTheme);
+
+  await fetchPoetryForTheme(finalTheme);
+
+  // zoom + show result again
+  await runRevealToResult(finalTheme);
+});
+
+
+    resultRestartBtn.addEventListener("click", () => {
+      restartQuiz();
+    });
+
+
+
+    resetThemeScores();
+    renderQuestion();
+
+    const pageTransition = document.getElementById("pageTransition");
+    const backLink = document.querySelector(".back-link");
+
+    if (pageTransition && backLink) {
+      backLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        const href = backLink.getAttribute("href");
+        if (!href) return;
+
+        pageTransition.classList.add("is-active");
+        setTimeout(() => {
+          window.location.href = href;
+        }, 900);
+      });
+    }
+  </script>
+</body>
+</html>
